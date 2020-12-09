@@ -34,7 +34,6 @@ public class Ewok {
             }
         }
         this.available=false;
-        System.out.println("In Ewok acquire "+serialNumber);
     }
 
     /**

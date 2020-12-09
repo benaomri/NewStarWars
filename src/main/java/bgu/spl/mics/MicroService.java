@@ -155,7 +155,7 @@ public abstract class MicroService  implements Runnable {
     }
 
     /**
-     * The entry point of the micro-service. TODO: you must complete this code
+     * The entry point of the micro-service.
      * otherwise you will end up in an infinite loop.
      */
     @Override
@@ -170,6 +170,8 @@ public abstract class MicroService  implements Runnable {
                 Message msgFromQ = MessageBusImpl.getInstance().awaitMessage(this);
                 System.out.println(this.name+" is Handling msg- "+ msgFromQ.getClass());
                 callbackMap.get(msgFromQ.getClass()).call(msgFromQ);
+                System.out.println(this.name+" Finished Handling msg- "+ msgFromQ.getClass());
+
             }
             catch (InterruptedException e) {
                 e.printStackTrace();

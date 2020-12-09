@@ -17,13 +17,14 @@ public class MessageBusImpl<microServiceVector> implements MessageBus {
 	private  static MessageBusImpl instance=null;//singleton expression
 
 	/**
-	 * We Use 3 Maps:
+	 * We Use 4 Maps:
 	 * 1. Key: MS Hash Code, val: Messeges vector
 	 * 2. Key: Event , val: MS string that subscribe it
-	 * 3. Key: Event , val: Future
+	 * 3. Key: Broadcast , val: MS string that subscribe it
+	 * 4. Key: Event , val: Future
 	 */
 	private Vector microServiceVector;
-	private ConcurrentHashMap<Integer, Vector<Message>> msgBusMS;
+	private  ConcurrentHashMap<Integer, Vector<Message>> msgBusMS;
 	private ConcurrentHashMap<Class<? extends Event>, Vector<Integer>> msgBusEV;
 	private ConcurrentHashMap<Class<? extends Broadcast>, Vector<Integer>> msgBusB;
 	private ConcurrentHashMap<Event, Future> msgBusFuture;
@@ -61,10 +62,12 @@ public class MessageBusImpl<microServiceVector> implements MessageBus {
 	 * @param <T>
 	 */
 	@Override
-	public <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
+	public synchronized  <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
 		if (!msgBusEV.contains(type))
 			msgBusEV.put(type,new Vector<>());
 		msgBusEV.get(type).add(m.hashCode());
+		System.out.println("Inserting- "+m.hashCode()+" "+m.getName());
+
 
 	}
 
@@ -102,6 +105,9 @@ public class MessageBusImpl<microServiceVector> implements MessageBus {
 	@Override
 	public synchronized <T> Future sendEvent(Event<T> e) {
 		Vector<Integer> toRoundRobin= msgBusEV.get(e.getClass());//
+		for(Integer serial:toRoundRobin)
+			System.out.println(serial);
+
 		Integer chosenMicro= round_robin(e,toRoundRobin);//send to round robin all microservice that subscribe to this event
 		msgBusMS.get(chosenMicro).add(e);
 		notifyAll();
@@ -109,7 +115,7 @@ public class MessageBusImpl<microServiceVector> implements MessageBus {
 	}
 
 	@Override
-	public void register(MicroService m) {
+	public synchronized void register(MicroService m) {
 		msgBusMS.put(m.hashCode(),new Vector<Message>());
 		System.out.println(m.getName()+","+m.hashCode()+ " Has Been Registered successfully");
 	}
@@ -127,11 +133,12 @@ public class MessageBusImpl<microServiceVector> implements MessageBus {
 		while(msgBusMS.get(m.hashCode()).isEmpty()){//wait until is massage to take
 			wait();
 		}
-		return  msgBusMS.get(m.hashCode()).get(0);
+		Message msgOut=msgBusMS.get(m.hashCode()).get(0);
+		msgBusMS.get(m.hashCode()).remove(0);
+		return  msgOut;
 	}
 
 	private Integer round_robin(Event e,Vector<Integer> microSVector){
-		System.out.println(microSVector==null);
 		Integer microHashCode= microSVector.firstElement();
 		msgBusEV.get(e.getClass()).remove(0);
 		msgBusEV.get(e.getClass()).add(microHashCode);//add to the end of the quque

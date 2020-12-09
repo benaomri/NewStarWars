@@ -3,7 +3,6 @@ package bgu.spl.mics.application.services;
 import bgu.spl.mics.MessageBusImpl;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.Main;
-import bgu.spl.mics.application.messages.AttackEvent;
 import bgu.spl.mics.application.messages.DeactivationEvent;
 import bgu.spl.mics.application.messages.TerminateBroadCast;
 import bgu.spl.mics.application.passiveObjects.Diary;
@@ -28,7 +27,7 @@ public class R2D2Microservice extends MicroService {
     protected void initialize() {
         MessageBusImpl.getInstance().register(this);
         subscribeBroadcast(TerminateBroadCast.class, c -> terminate());
-        subscribeEvent(DeactivationEvent.class, DeactivationEvent::Deactive);
+        subscribeEvent(DeactivationEvent.class, DeactivationEvent::Deactivate);
         Main.CDL.countDown();
 
     }

@@ -24,9 +24,7 @@ public class Main {
 		CDL=new CountDownLatch(4);
 		Init("/home/spl211/IdeaProjects/StarWars/src/main/input.json");
 		Simulate();
-		outGson();
-
-
+		outGson("/home/spl211/IdeaProjects/StarWars/src/main/output.json");
 	}
 
 
@@ -49,12 +47,11 @@ public class Main {
 		leia.start();
 	}
 
-	public static void outGson() {
-
+	public static void outGson(String Path) {
 		try {
 			Gson outGson=new Gson();
 			Diary diary=Diary.getInstance();
-			Writer writer=new FileWriter("/home/spl211/IdeaProjects/StarWars/src/main/output.json");
+			Writer writer=new FileWriter(Path);
 			outGson.toJson(diary,writer);
 			writer.close();
 		} catch (IOException e) {

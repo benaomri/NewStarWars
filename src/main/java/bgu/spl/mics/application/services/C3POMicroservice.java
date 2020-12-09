@@ -27,9 +27,8 @@ public class C3POMicroservice extends MicroService {
     @Override
     protected void initialize() {
         MessageBusImpl.getInstance().register(this);
-
         subscribeBroadcast(TerminateBroadCast.class, c -> terminate());
-        subscribeEvent(AttackEvent.class,AttackEvent::att);
+        subscribeEvent(AttackEvent.class, AttackEvent::att);
         Main.CDL.countDown();
 
 

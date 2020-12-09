@@ -1,14 +1,9 @@
 package bgu.spl.mics.application.services;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-import bgu.spl.mics.CallbackImpl;
-import bgu.spl.mics.Message;
-import bgu.spl.mics.MessageBusImpl;
-import bgu.spl.mics.MicroService;
+import bgu.spl.mics.*;
 import bgu.spl.mics.application.messages.AttackEvent;
 import bgu.spl.mics.application.messages.TerminateBroadCast;
 import bgu.spl.mics.application.passiveObjects.Attack;
@@ -26,18 +21,20 @@ import bgu.spl.mics.application.Main;
  */
 public class LeiaMicroservice extends MicroService {
 	private Attack[] attacks;
-    private Map<Message, CallbackImpl> callbackMap;
+//    private Map<Message, CallbackImpl> callbackMap;
+    private static HashMap<Integer, Future> FutureMap;
+    static AtomicBoolean FinishedSend;
 
 
     public LeiaMicroservice(Attack[] attacks) {
         super("Leia");
 		this.attacks = attacks;
+        FinishedSend=new AtomicBoolean(false);
+        FutureMap=new HashMap<>();
     }
 
     @Override
     protected void initialize() {
-
-
         while (Main.CDL.getCount()>0)
         {
             try {
@@ -50,16 +47,22 @@ public class LeiaMicroservice extends MicroService {
         MessageBusImpl.getInstance().register(this);
         subscribeBroadcast(TerminateBroadCast.class, c -> terminate());
         sendAttEvent();
-
-
-
+        FinishedSend.set(true);
     }
     private void sendAttEvent(){
+        int i=1;
         for(Attack att:attacks){
-            sendEvent(new AttackEvent(att.getDuration(),att.getSerials()));
+            sendEvent(new AttackEvent(att.getDuration(),att.getSerials(),i));
+            i++;
+            FutureMap.put(i,new Future());
         }
 
 
+    }
+
+    public  static HashMap<Integer, Future> getFutureMap()
+    {
+        return FutureMap;
     }
 
     public void printAtt()
