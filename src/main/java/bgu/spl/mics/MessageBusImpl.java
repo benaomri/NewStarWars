@@ -22,8 +22,8 @@ public class MessageBusImpl<microServiceVector> implements MessageBus {
 	 * 4. Key: Event , val: Future
 	 */
 	private Vector microServiceVector;
-	private ConcurrentHashMap<Integer, Vector<Message>> msgBusMS;
-	private ConcurrentHashMap<Class<? extends Event>, Vector<Integer>> msgBusEV;
+	private volatile ConcurrentHashMap<Integer, Vector<Message>> msgBusMS;
+	private volatile ConcurrentHashMap<Class<? extends Event>, Vector<Integer>> msgBusEV;
 	private ConcurrentHashMap<Class<? extends Broadcast>, Vector<Integer>> msgBusB;
 	private ConcurrentHashMap<Event, Future> msgBusFuture;
 	private BlockingDeque bQueue;
@@ -65,8 +65,7 @@ public class MessageBusImpl<microServiceVector> implements MessageBus {
 			msgBusEV.put(type,new Vector<>());
 		msgBusEV.get(type).add(m.hashCode());
 		System.out.println("Inserting- "+m.hashCode()+" "+m.getName());
-
-
+		System.out.println(msgBusEV.toString());
 	}
 
 
