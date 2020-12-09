@@ -34,6 +34,7 @@ public class Ewok {
             }
         }
         this.available=false;
+        System.out.println("In Ewok acquire "+serialNumber);
     }
 
     /**
@@ -41,7 +42,7 @@ public class Ewok {
      *  @PRE: available is false
      *  @POST:  available is true
      */
-    public void release() {
+    public synchronized void release() {
 
         this.available=true;
         this.isAvailable.set(true);

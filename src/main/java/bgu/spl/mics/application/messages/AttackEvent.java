@@ -25,21 +25,24 @@ public class AttackEvent implements Event<Boolean> {
 
     public void att() throws InterruptedException {
          Vector<Ewok> EwokList=Ewoks.getInstance().getEwokList();
+        System.out.println(serials);
         //Acquire
         System.out.println("Start Acquire");
         for (int i=0;i<serials.size();i++)
         {
-            int serial=serials.get(0);
+            int serial=serials.get(i)-1;
+            System.out.println("Try to acquire "+serial);
             EwokList.get(serial).acquire();
+            System.out.println("Finish to acquire "+serial);
         }
-        System.out.println("Start sleep");
+        System.out.println("Finish sleep");
         Thread.sleep(duration);
         System.out.println("Finish sleep");
 
         //Release
         for (int i=0;i<serials.size();i++)
         {
-            int serial=serials.get(0);
+            int serial=serials.get(i)-1;
             EwokList.get(serial).release();
         }
         Diary.getInstance().incAtt();
