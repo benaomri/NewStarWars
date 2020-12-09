@@ -1,5 +1,6 @@
 package bgu.spl.mics.application.messages;
 import bgu.spl.mics.Event;
+import bgu.spl.mics.MessageBusImpl;
 import  bgu.spl.mics.application.passiveObjects.Diary;
 import bgu.spl.mics.application.passiveObjects.Ewok;
 import bgu.spl.mics.application.passiveObjects.Ewoks;
@@ -43,7 +44,6 @@ public class AttackEvent implements Event<Boolean> {
             EwokList.get(serial).release();
         }
         Diary.getInstance().incAtt();
-        LeiaMicroservice.getFutureMap().get(serial).resolve("Finished");
 
     }
 

@@ -20,17 +20,15 @@ import bgu.spl.mics.application.Main;
  * You MAY change constructor signatures and even add new public constructors.
  */
 public class LeiaMicroservice extends MicroService {
-	private Attack[] attacks;
-//    private Map<Message, CallbackImpl> callbackMap;
-    private static HashMap<Integer, Future> FutureMap;
+    private Attack[] attacks;
+    //    private Map<Message, CallbackImpl> callbackMap;
     static AtomicBoolean FinishedSend;
 
 
     public LeiaMicroservice(Attack[] attacks) {
         super("Leia");
-		this.attacks = attacks;
+        this.attacks = attacks;
         FinishedSend=new AtomicBoolean(false);
-        FutureMap=new HashMap<>();
     }
 
     @Override
@@ -54,17 +52,10 @@ public class LeiaMicroservice extends MicroService {
         for(Attack att:attacks){
             sendEvent(new AttackEvent(att.getDuration(),att.getSerials(),i));
             i++;
-            FutureMap.put(i,new Future());
         }
 
 
     }
-
-    public  static HashMap<Integer, Future> getFutureMap()
-    {
-        return FutureMap;
-    }
-
     public void printAtt()
     {
         for(Attack att:attacks)

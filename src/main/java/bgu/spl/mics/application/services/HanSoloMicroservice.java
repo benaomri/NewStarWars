@@ -20,7 +20,6 @@ import java.util.Map;
  */
 public class HanSoloMicroservice extends MicroService {
 
-
     public HanSoloMicroservice() {
         super("Han");
     }

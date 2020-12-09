@@ -39,4 +39,5 @@ public class C3POMicroservice extends MicroService {
         Diary.getInstance().setC3POTerminate();
     }
 
+
 }
