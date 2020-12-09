@@ -40,12 +40,10 @@ public class LeiaMicroservice extends MicroService {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
         }
         MessageBusImpl.getInstance().register(this);
         subscribeBroadcast(TerminateBroadCast.class, c -> terminate());
         sendAttEvent();
-        FinishedSend.set(true);
     }
     private void sendAttEvent(){
         int i=1;
@@ -56,11 +54,7 @@ public class LeiaMicroservice extends MicroService {
 
 
     }
-    public void printAtt()
-    {
-        for(Attack att:attacks)
-            System.out.println(att);
-    }
+
     @Override
     protected void close()
     {

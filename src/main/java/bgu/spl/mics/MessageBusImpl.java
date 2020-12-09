@@ -5,8 +5,6 @@ import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
 
-import static java.lang.Thread.sleep;
-
 
 /**
  * The {@link MessageBusImpl class is the implementation of the MessageBus interface.
@@ -24,7 +22,7 @@ public class MessageBusImpl<microServiceVector> implements MessageBus {
 	 * 4. Key: Event , val: Future
 	 */
 	private Vector microServiceVector;
-	private  ConcurrentHashMap<Integer, Vector<Message>> msgBusMS;
+	private ConcurrentHashMap<Integer, Vector<Message>> msgBusMS;
 	private ConcurrentHashMap<Class<? extends Event>, Vector<Integer>> msgBusEV;
 	private ConcurrentHashMap<Class<? extends Broadcast>, Vector<Integer>> msgBusB;
 	private ConcurrentHashMap<Event, Future> msgBusFuture;
@@ -87,6 +85,8 @@ public class MessageBusImpl<microServiceVector> implements MessageBus {
 
 	}
 
+
+
 	@Override
 	public void sendBroadcast(Broadcast b) {
 		Vector<Integer>broadcastMicroS= msgBusB.get(b);//get all microService that subscribe to the broadCast
@@ -113,11 +113,17 @@ public class MessageBusImpl<microServiceVector> implements MessageBus {
 		notifyAll();
         return msgBusFuture.get(e);
 	}
-
+	private  void printMSG()
+	{
+		System.out.println(msgBusMS.toString());
+	}
 	@Override
 	public synchronized void register(MicroService m) {
-		msgBusMS.put(m.hashCode(),new Vector<Message>());
-		System.out.println(m.getName()+","+m.hashCode()+ " Has Been Registered successfully");
+		if(!msgBusMS.contains(m.hashCode())) {
+			msgBusMS.put(m.hashCode(), new Vector<Message>());
+			System.out.println(m.getName() + "," + m.hashCode() + " Has Been Registered successfully");
+			printMSG();
+		}
 	}
 
 	@Override
