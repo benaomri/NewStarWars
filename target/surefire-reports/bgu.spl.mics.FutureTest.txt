@@ -1,0 +1,8 @@
+-------------------------------------------------------------------------------
+Test set: bgu.spl.mics.FutureTest
+-------------------------------------------------------------------------------
+Tests run: 5, Failures: 1, Errors: 0, Skipped: 0, Time elapsed: 0.001 s <<< FAILURE! - in bgu.spl.mics.FutureTest
+testGet  Time elapsed: 0 s  <<< FAILURE!
+org.opentest4j.AssertionFailedError: Check if the result we get Equal to the result we Send ==> expected: <null> but was: <Result>
+	at bgu.spl.mics.FutureTest.testGet(FutureTest.java:85)
+

@@ -1,0 +1,12 @@
+-------------------------------------------------------------------------------
+Test set: bgu.spl.mics.application.passiveObjects.EwokTest
+-------------------------------------------------------------------------------
+Tests run: 2, Failures: 2, Errors: 0, Skipped: 0, Time elapsed: 0.029 s <<< FAILURE! - in bgu.spl.mics.application.passiveObjects.EwokTest
+acquire  Time elapsed: 0.023 s  <<< FAILURE!
+org.opentest4j.AssertionFailedError: Check if acquire changed to True ==> expected: <true> but was: <false>
+	at bgu.spl.mics.application.passiveObjects.EwokTest.acquire(EwokTest.java:32)
+
+release  Time elapsed: 0 s  <<< FAILURE!
+org.opentest4j.AssertionFailedError: Check if release changed to True ==> expected: <true> but was: <false>
+	at bgu.spl.mics.application.passiveObjects.EwokTest.release(EwokTest.java:41)
+
