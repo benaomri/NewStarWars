@@ -111,7 +111,7 @@ public class MessageBusImpl<microServiceVector> implements MessageBus {
 	@Override
 	public void register(MicroService m) {
 		msgBusMS.put(m.hashCode(),new Vector<Message>());
-		System.out.println("Has Been Registered successfully "+m.getName());
+		System.out.println(m.getName()+","+m.hashCode()+ " Has Been Registered successfully");
 	}
 
 	@Override

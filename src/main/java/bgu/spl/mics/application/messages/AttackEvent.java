@@ -26,12 +26,16 @@ public class AttackEvent implements Event<Boolean> {
     public void att() throws InterruptedException {
          Vector<Ewok> EwokList=Ewoks.getInstance().getEwokList();
         //Acquire
+        System.out.println("Start Acquire");
         for (int i=0;i<serials.size();i++)
         {
             int serial=serials.get(0);
             EwokList.get(serial).acquire();
         }
+        System.out.println("Start sleep");
         Thread.sleep(duration);
+        System.out.println("Finish sleep");
+
         //Release
         for (int i=0;i<serials.size();i++)
         {
@@ -39,8 +43,6 @@ public class AttackEvent implements Event<Boolean> {
             EwokList.get(serial).release();
         }
         Diary.getInstance().incAtt();
-
-
     }
 
 

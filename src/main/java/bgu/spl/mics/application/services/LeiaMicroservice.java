@@ -36,8 +36,7 @@ public class LeiaMicroservice extends MicroService {
 
     @Override
     protected void initialize() {
-        MessageBusImpl.getInstance().register(this);
-        subscribeBroadcast(TerminateBroadCast.class, c -> terminate());
+
 
         while (Main.CDL.getCount()>0)
         {
@@ -48,7 +47,8 @@ public class LeiaMicroservice extends MicroService {
             }
 
         }
-
+        MessageBusImpl.getInstance().register(this);
+        subscribeBroadcast(TerminateBroadCast.class, c -> terminate());
         sendAttEvent();
 
 

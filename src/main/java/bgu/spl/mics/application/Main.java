@@ -42,15 +42,11 @@ public class Main {
 	}
 
 	public static void Simulate() {
-
 		hanSolo.start();
 		c3po.start();
 		lando.start();
 		r2d2.start();
 		leia.start();
-
-
-
 	}
 
 	public static void outGson() {
