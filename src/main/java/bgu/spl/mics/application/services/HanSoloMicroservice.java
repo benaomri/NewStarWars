@@ -4,6 +4,7 @@ import bgu.spl.mics.*;
 import bgu.spl.mics.application.Main;
 
 import bgu.spl.mics.application.messages.AttackEvent;
+import bgu.spl.mics.application.messages.LeiaMFinishAtt;
 import bgu.spl.mics.application.messages.TerminateBroadCast;
 import bgu.spl.mics.application.passiveObjects.Attack;
 import bgu.spl.mics.application.passiveObjects.Diary;
@@ -68,6 +69,7 @@ public class HanSoloMicroservice extends MicroService {
             int serial=serials.get(i)-1;
             EwokList.get(serial).release();
         }
+        MessageBusImpl.getInstance().sendBroadcast(new LeiaMFinishAtt(a.getSerial()));
         Diary.getInstance().setHanSoloFinish();
         Diary.getInstance().incAtt();
     }

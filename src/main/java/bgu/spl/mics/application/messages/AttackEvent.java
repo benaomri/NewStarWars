@@ -36,4 +36,5 @@ public class AttackEvent implements Event<Boolean> {
     {
         return duration;
     }
+    public int getSerial(){return serial;}
 }

@@ -7,6 +7,7 @@ import bgu.spl.mics.Callback;
 import bgu.spl.mics.CallbackImpl;
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.AttackEvent;
+import bgu.spl.mics.application.messages.LeiaMFinishAtt;
 import bgu.spl.mics.application.messages.TerminateBroadCast;
 import bgu.spl.mics.application.passiveObjects.Diary;
 import bgu.spl.mics.application.passiveObjects.Ewok;
@@ -58,7 +59,9 @@ public class C3POMicroservice extends MicroService {
             EwokList.get(serial).acquire();
         }
         try {
+
             Thread.sleep(duration);
+
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -69,6 +72,7 @@ public class C3POMicroservice extends MicroService {
             int serial=serials.get(i)-1;
             EwokList.get(serial).release();
         }
+        MessageBusImpl.getInstance().sendBroadcast(new LeiaMFinishAtt(a.getSerial()));
         Diary.getInstance().setC3POFinish();
         Diary.getInstance().incAtt();
     }
