@@ -23,7 +23,6 @@ public class LeiaMicroservice extends MicroService {
     static AtomicBoolean FinishedSend;
     static   HashMap<Class<? extends Message>,Future<Boolean>[]> FutureMap;
     private Future<Boolean>[]futures;
-    private LeiaMFinishAtt leiaMFinishAtt;
 
 
     public LeiaMicroservice(Attack[] attacks) {
@@ -34,6 +33,7 @@ public class LeiaMicroservice extends MicroService {
         FutureMap.put(AttackEvent.class,new Future[attacks.length]);
         FutureMap.put(DeactivationEvent.class,new Future[1]);
         FutureMap.put(BombDestroyerEvent.class,new Future[1]);
+        futures=new Future[attacks.length];
 
     }
 
@@ -49,7 +49,7 @@ public class LeiaMicroservice extends MicroService {
         }
         MessageBusImpl.getInstance().register(this);
         subscribeBroadcast(TerminateBroadCast.class, c -> terminate());
-        subscribeBroadcast(LeiaMFinishAtt.class,c ->changeComplete(leiaMFinishAtt.getSerial()) );
+        subscribeBroadcast(LeiaMFinishAtt.class,(LeiaMFinishAtt l)->changeComplete(l.getSerial()) );
         sendAttEvent();
 
 
@@ -78,6 +78,10 @@ public class LeiaMicroservice extends MicroService {
 
     public void changeComplete(int i){
         futures[i].resolve(true);
+        if(isComplete())
+        {
+            MessageBusImpl.getInstance().sendEvent(new DeactivationEvent());
+        }
     }
     public boolean isComplete(){
         for (Future<Boolean> future : futures) {

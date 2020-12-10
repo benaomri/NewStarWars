@@ -89,6 +89,8 @@ public abstract class MicroService  implements Runnable {
      *                 queue.
      */
     protected final <B extends Broadcast> void subscribeBroadcast(Class<B> type, Callback<B> callback) {
+        if(!callbackMap.containsKey(type)) // We make sure we don't have it already
+            callbackMap.put(type,callback); //Add the specific CallBack to the type
         MessageBusImpl.getInstance().subscribeBroadcast(type,this); //Add to Broadcast
 
     }

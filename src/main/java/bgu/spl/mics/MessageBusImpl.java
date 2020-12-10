@@ -25,7 +25,7 @@ public class MessageBusImpl<microServiceVector> implements MessageBus {
 	private volatile ConcurrentHashMap<Integer, Vector<Message>> msgBusMS;
 	private volatile ConcurrentHashMap<Class<? extends Event>, Vector<Integer>> msgBusEV;
 	private ConcurrentHashMap<Class<? extends Broadcast>, Vector<Integer>> msgBusB;
-	private ConcurrentHashMap<Class<? extends Message>, Future> msgBusFuture;
+	private ConcurrentHashMap<Integer, Future<Boolean>> msgBusFuture;
 	private BlockingDeque bQueue;
 
 
@@ -74,21 +74,23 @@ public class MessageBusImpl<microServiceVector> implements MessageBus {
 		if (!msgBusB.containsKey(type))
 			msgBusB.put(type,new Vector<>());
 		msgBusB.get(type).add(m.hashCode());
+		System.out.println("Inserting B- "+m.hashCode()+" "+m.getName());
+		System.out.println(msgBusB.toString());
 	}
 
 
 
 	@Override @SuppressWarnings("unchecked")
 	public <T> void complete(Event<T> e, T result) {
-		msgBusFuture.get(e).resolve(result);
+		msgBusFuture.get(e.hashCode()).resolve(true);
 
 	}
 
 
 
 	@Override
-	public void sendBroadcast(Broadcast b) {
-		Vector<Integer>broadcastMicroS= msgBusB.get(b);//get all microService that subscribe to the broadCast
+	public synchronized void sendBroadcast(Broadcast b) {
+		Vector<Integer>broadcastMicroS= msgBusB.get(b.getClass());//get all microService that subscribe to the broadCast
 		for(Integer HashCode:broadcastMicroS){//insert to each microservice the broadcast
 			msgBusMS.get(HashCode).add(b);
 		}
@@ -106,11 +108,11 @@ public class MessageBusImpl<microServiceVector> implements MessageBus {
 		Vector<Integer> toRoundRobin= msgBusEV.get(e.getClass());//
 		for(Integer serial:toRoundRobin)
 			System.out.println(serial);
-
 		Integer chosenMicro= round_robin(e,toRoundRobin);//send to round robin all microservice that subscribe to this event
 		msgBusMS.get(chosenMicro).add(e);
+		msgBusFuture.put(e.hashCode(),new Future());
 		notifyAll();
-        return msgBusFuture.get(e);
+        return msgBusFuture.get(e.hashCode());
 	}
 	private  void printMSG()
 	{

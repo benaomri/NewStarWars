@@ -24,7 +24,7 @@ public class LandoMicroservice  extends MicroService {
     protected void initialize() {
         MessageBusImpl.getInstance().register(this);
         subscribeBroadcast(TerminateBroadCast.class, c -> terminate());
-        subscribeEvent(BombDestroyerEvent.class, c -> Thread.sleep(duration));
+        subscribeEvent(BombDestroyerEvent.class, c -> Bomb());
         Main.CDL.countDown();
 
 
@@ -33,5 +33,17 @@ public class LandoMicroservice  extends MicroService {
     protected void close()
     {
         Diary.getInstance().setLandoTerminate();
+    }
+
+
+    public void Bomb()
+    {
+        try {
+            Thread.sleep(duration);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        MessageBusImpl.getInstance().sendBroadcast(new TerminateBroadCast());
     }
 }
