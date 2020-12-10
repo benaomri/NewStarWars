@@ -4,10 +4,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import bgu.spl.mics.*;
-import bgu.spl.mics.application.messages.AttackEvent;
-import bgu.spl.mics.application.messages.BombDestroyerEvent;
-import bgu.spl.mics.application.messages.DeactivationEvent;
-import bgu.spl.mics.application.messages.TerminateBroadCast;
+import bgu.spl.mics.application.messages.*;
 import bgu.spl.mics.application.passiveObjects.Attack;
 import bgu.spl.mics.application.passiveObjects.Diary;
 import bgu.spl.mics.application.Main;
@@ -23,9 +20,10 @@ import bgu.spl.mics.application.Main;
  */
 public class LeiaMicroservice extends MicroService {
     private Attack[] attacks;
-    static int numberOfAtt;
     static AtomicBoolean FinishedSend;
-    static   HashMap<Class<? extends Message>,Future[]> FutureMap;
+    static   HashMap<Class<? extends Message>,Future<Boolean>[]> FutureMap;
+    private Future<Boolean>[]futures;
+    private LeiaMFinishAtt leiaMFinishAtt;
 
 
     public LeiaMicroservice(Attack[] attacks) {
@@ -36,7 +34,6 @@ public class LeiaMicroservice extends MicroService {
         FutureMap.put(AttackEvent.class,new Future[attacks.length]);
         FutureMap.put(DeactivationEvent.class,new Future[1]);
         FutureMap.put(BombDestroyerEvent.class,new Future[1]);
-        numberOfAtt=attacks.length;
 
     }
 
@@ -52,20 +49,21 @@ public class LeiaMicroservice extends MicroService {
         }
         MessageBusImpl.getInstance().register(this);
         subscribeBroadcast(TerminateBroadCast.class, c -> terminate());
+        subscribeBroadcast(LeiaMFinishAtt.class,c ->changeComplete(leiaMFinishAtt.getSerial()) );
         sendAttEvent();
+
 
     }
     private void sendAttEvent(){
         int i=0;
         for(Attack att:attacks){
-            sendEvent(new AttackEvent(att.getDuration(),att.getSerials(),i));
-            Future[] arr=FutureMap.get(AttackEvent.class);
-            arr[i]=new Future();
+            futures[i]=sendEvent(new AttackEvent(att.getDuration(),att.getSerials(),i));
+
             i++;
         }
     }
 
-   public static  Future[] getFuture()
+    public static  Future[] getFuture()
     {
         if (FutureMap!=null)
             return  FutureMap.get(AttackEvent.class);
@@ -78,8 +76,15 @@ public class LeiaMicroservice extends MicroService {
         Diary.getInstance().setLeiaTerminate();
     }
 
-    public  static Integer getAtt()
-    {
-        return numberOfAtt;
+    public void changeComplete(int i){
+        futures[i].resolve(true);
     }
+    public boolean isComplete(){
+        for (Future<Boolean> future : futures) {
+            if (!future.isDone())
+                return false;
+        }
+        return true;
+    }
+
 }
