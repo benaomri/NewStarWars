@@ -22,14 +22,15 @@ public class Main {
 	public static void main(String[] args) throws IOException, InterruptedException {
 		CDL=new CountDownLatch(4);
 		Init("/home/spl211/IdeaProjects/StarWars/src/main/input.json");
-		class trheadJoin{
-
+		class toRun implements Runnable{
+			public toRun(){}
+			public void run(){
+				Simulate();
+				}
 			}
-
-
-		join.start();
-		join.join();
-		Simulate();
+		Thread Run=new Thread(new toRun());
+		Run.start();
+		Run.join();
 		outGson();
 
 
