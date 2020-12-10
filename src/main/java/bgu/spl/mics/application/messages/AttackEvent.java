@@ -44,7 +44,7 @@ public class AttackEvent implements Event<Boolean> {
             EwokList.get(serial).release();
         }
         Diary.getInstance().incAtt();
-
+        LeiaMicroservice.getFuture()[serial].resolve("");
     }
 
 }
