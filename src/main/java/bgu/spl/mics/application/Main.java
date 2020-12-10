@@ -1,10 +1,9 @@
 package bgu.spl.mics.application;
 
-import bgu.spl.mics.MessageBusImpl;
+
 import bgu.spl.mics.application.passiveObjects.*;
 import bgu.spl.mics.application.services.*;
 import com.google.gson.Gson;
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
@@ -23,15 +22,23 @@ public class Main {
 
 	public static void main(String[] args) throws IOException {
 		CDL=new CountDownLatch(4);
-		Init("/home/spl211/IdeaProjects/NewStarWars/src/main/input.json");
-		Simulate();
-
+		Init("/home/spl211/IdeaProjects/StarWars/src/main/input.json");
+		class toRun implements Runnable{
+			public toRun(){}
+			public void run(){
+				Simulate();
+				}
+			}
+		Thread Run=new Thread(new toRun());
+		Run.start();
 		try {
-			Thread.sleep(7000);
+			Run.join();
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		outGson("/home/spl211/IdeaProjects/NewStarWars/src/main/output.json");
+		outGson("/home/spl211/IdeaProjects/StarWars/src/main/output.json");
+
+
 	}
 
 
