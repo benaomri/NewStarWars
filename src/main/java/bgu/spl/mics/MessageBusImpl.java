@@ -71,7 +71,7 @@ public class MessageBusImpl<microServiceVector> implements MessageBus {
 
 	@Override
 	public void subscribeBroadcast(Class<? extends Broadcast> type, MicroService m) {
-		if (!msgBusB.contains(type))
+		if (!msgBusB.containsKey(type))
 			msgBusB.put(type,new Vector<>());
 		msgBusB.get(type).add(m.hashCode());
 	}
@@ -118,7 +118,7 @@ public class MessageBusImpl<microServiceVector> implements MessageBus {
 	}
 	@Override
 	public synchronized void register(MicroService m) {
-		if(!msgBusMS.contains(m.hashCode())) {
+		if(!msgBusMS.containsKey(m.hashCode())) {
 			msgBusMS.put(m.hashCode(), new Vector<Message>());
 			System.out.println(m.getName() + "," + m.hashCode() + " Has Been Registered successfully");
 			printMSG();

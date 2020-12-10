@@ -71,6 +71,5 @@ public class C3POMicroservice extends MicroService {
         }
         Diary.getInstance().setC3POFinish();
         Diary.getInstance().incAtt();
-//        LeiaMicroservice.getFuture()[serial].resolve("");
     }
 }

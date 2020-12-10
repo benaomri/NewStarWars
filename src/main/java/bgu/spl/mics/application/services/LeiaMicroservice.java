@@ -23,6 +23,7 @@ import bgu.spl.mics.application.Main;
  */
 public class LeiaMicroservice extends MicroService {
     private Attack[] attacks;
+    static int numberOfAtt;
     static AtomicBoolean FinishedSend;
     static   HashMap<Class<? extends Message>,Future[]> FutureMap;
 
@@ -35,6 +36,7 @@ public class LeiaMicroservice extends MicroService {
         FutureMap.put(AttackEvent.class,new Future[attacks.length]);
         FutureMap.put(DeactivationEvent.class,new Future[1]);
         FutureMap.put(BombDestroyerEvent.class,new Future[1]);
+        numberOfAtt=attacks.length;
 
     }
 
@@ -74,5 +76,10 @@ public class LeiaMicroservice extends MicroService {
     protected void close()
     {
         Diary.getInstance().setLeiaTerminate();
+    }
+
+    public  static Integer getAtt()
+    {
+        return numberOfAtt;
     }
 }
