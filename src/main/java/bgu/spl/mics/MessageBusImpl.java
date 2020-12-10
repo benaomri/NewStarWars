@@ -61,7 +61,7 @@ public class MessageBusImpl<microServiceVector> implements MessageBus {
 	 */
 	@Override
 	public synchronized  <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
-		if (!msgBusEV.contains(type))
+		if (!msgBusEV.containsKey(type))
 			msgBusEV.put(type,new Vector<>());
 		msgBusEV.get(type).add(m.hashCode());
 		System.out.println("Inserting- "+m.hashCode()+" "+m.getName());
