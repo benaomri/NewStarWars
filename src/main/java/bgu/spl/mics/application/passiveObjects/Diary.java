@@ -1,6 +1,8 @@
 package bgu.spl.mics.application.passiveObjects;
 
 
+import bgu.spl.mics.application.Main;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -12,7 +14,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Diary {
     //Fields
     private AtomicInteger totalAttacks;
-    private final long StartTime;
     private long HanSoloFinish;
     private long C3POFinish;
     private long R2D2Deactivate;
@@ -31,7 +32,6 @@ public class Diary {
      */
     private Diary() {
         totalAttacks =new AtomicInteger(0);
-        StartTime=System.currentTimeMillis();
         HanSoloFinish=0;
         C3POFinish=0;
         R2D2Deactivate=0;
@@ -72,7 +72,7 @@ public class Diary {
      * set LeiaTerminate
      */
     public void setLeiaTerminate() {
-        LeiaTerminate = System.currentTimeMillis()- StartTime;
+        LeiaTerminate = System.currentTimeMillis()- Main.getStartTime();
     }
 
     /**
@@ -88,7 +88,7 @@ public class Diary {
      * set LandoTerminate
      */
     public void setLandoTerminate() {
-        LandoTerminate =System.currentTimeMillis()- StartTime;
+        LandoTerminate =System.currentTimeMillis()- Main.getStartTime();
     }
 
     /**
@@ -104,7 +104,7 @@ public class Diary {
      * set R2D2Terminate
      */
     public void setR2D2Terminate() {
-        R2D2Terminate = System.currentTimeMillis()-StartTime;
+        R2D2Terminate = System.currentTimeMillis()-Main.getStartTime();
     }
 
     /**
@@ -120,7 +120,7 @@ public class Diary {
      * set C3POTerminate
      */
     public void setC3POTerminate() {
-        C3POTerminate = System.currentTimeMillis()-StartTime;
+        C3POTerminate = System.currentTimeMillis()-Main.getStartTime();
     }
 
     /**
@@ -138,7 +138,7 @@ public class Diary {
      */
     public void setHanSoloTerminate() {
 
-        HanSoloTerminate =System.currentTimeMillis()- StartTime;
+        HanSoloTerminate =System.currentTimeMillis()- Main.getStartTime();
     }
 
     /**
@@ -154,7 +154,7 @@ public class Diary {
      * set R2D2Deactivate
      */
     public void setR2D2Deactivate() {
-        R2D2Deactivate =System.currentTimeMillis() - StartTime;
+        R2D2Deactivate =System.currentTimeMillis() - Main.getStartTime();
     }
 
     /**
@@ -170,7 +170,7 @@ public class Diary {
      * set C3POFinish
      */
     public void setC3POFinish() {
-        C3POFinish =System.currentTimeMillis() - StartTime;
+        C3POFinish =System.currentTimeMillis() - Main.getStartTime();
     }
 
     /**
@@ -186,7 +186,7 @@ public class Diary {
      * set HanSoloFinish
      */
     public void setHanSoloFinish() {
-        HanSoloFinish = System.currentTimeMillis()-StartTime;
+        HanSoloFinish = System.currentTimeMillis()-Main.getStartTime();
     }
 
     public AtomicInteger getNumberOfAttacks() {

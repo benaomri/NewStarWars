@@ -15,6 +15,7 @@ import java.util.concurrent.CountDownLatch;
  * In the end, you should output a JSON.
  */
 public class Main {
+	private  static long StartTime;
 	private static Ewoks ewoks;
 	private static Thread leia,hanSolo,c3po,lando,r2d2;
 	public static CountDownLatch CDL;
@@ -23,7 +24,13 @@ public class Main {
 	public static void main(String[] args) throws IOException {
 		CDL=new CountDownLatch(4);
 		Init("/home/spl211/IdeaProjects/NewStarWars/src/main/input.json");
-//		Simulate();
+		Simulate();
+
+		try {
+			Thread.sleep(7000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 		outGson("/home/spl211/IdeaProjects/NewStarWars/src/main/output.json");
 	}
 
@@ -37,6 +44,7 @@ public class Main {
 		lando=new Thread(new LandoMicroservice(input.getLando()));
 		r2d2=new Thread(new R2D2Microservice(input.getR2D2()));
 		ewoks=Ewoks.getInstance(input.getEwoks());
+		StartTime=System.currentTimeMillis();
 	}
 
 	public static void Simulate() {
@@ -58,5 +66,9 @@ public class Main {
 			e.printStackTrace();
 		}
 
+	}
+
+	public static long getStartTime(){
+		return StartTime;
 	}
 }

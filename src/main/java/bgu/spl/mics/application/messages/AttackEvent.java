@@ -11,7 +11,7 @@ import java.util.Vector;
 
 public class AttackEvent implements Event<Boolean> {
     long duration;
-    List<Integer>serials=new Vector<>();
+    List<Integer> serials=new Vector<>();
     int serial;
 
     public AttackEvent()
@@ -26,25 +26,14 @@ public class AttackEvent implements Event<Boolean> {
         this.serial=serial;
     }
 
-    public void att() throws InterruptedException {
-         Vector<Ewok> EwokList=Ewoks.getInstance().getEwokList();
-        System.out.println(serials);
-        //Acquire
-        for (int i=0;i<serials.size();i++)
-        {
-            int serial=serials.get(i)-1;
-            EwokList.get(serial).acquire();
-        }
-        Thread.sleep(duration);
 
-        //Release
-        for (int i=0;i<serials.size();i++)
-        {
-            int serial=serials.get(i)-1;
-            EwokList.get(serial).release();
-        }
-        Diary.getInstance().incAtt();
-        LeiaMicroservice.getFuture()[serial].resolve("");
+    public  List<Integer> getSerials()
+    {
+        return serials;
     }
 
+    public long getDuration()
+    {
+        return duration;
+    }
 }

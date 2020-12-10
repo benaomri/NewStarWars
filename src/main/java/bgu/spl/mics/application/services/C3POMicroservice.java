@@ -9,6 +9,11 @@ import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.AttackEvent;
 import bgu.spl.mics.application.messages.TerminateBroadCast;
 import bgu.spl.mics.application.passiveObjects.Diary;
+import bgu.spl.mics.application.passiveObjects.Ewok;
+import bgu.spl.mics.application.passiveObjects.Ewoks;
+
+import java.util.List;
+import java.util.Vector;
 
 
 /**
@@ -28,9 +33,8 @@ public class C3POMicroservice extends MicroService {
     protected void initialize() {
         MessageBusImpl.getInstance().register(this);
         System.out.println(AttackEvent.class);
-
         subscribeBroadcast(TerminateBroadCast.class, c -> terminate());
-        subscribeEvent(AttackEvent.class, AttackEvent::att);
+        subscribeEvent(AttackEvent.class, (AttackEvent att)->C3POatt(att));
         Main.CDL.countDown();
 
 
@@ -41,5 +45,32 @@ public class C3POMicroservice extends MicroService {
         Diary.getInstance().setC3POTerminate();
     }
 
+    private  void C3POatt(AttackEvent a){
+        Vector<Ewok> EwokList= Ewoks.getInstance().getEwokList();
+        List<Integer> serials=a.getSerials();
+        long duration=a.getDuration();
 
+        System.out.println(serials);
+        //Acquire
+        for (int i=0;i<serials.size();i++)
+        {
+            int serial=serials.get(i)-1;
+            EwokList.get(serial).acquire();
+        }
+        try {
+            Thread.sleep(duration);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        //Release
+        for (int i=0;i<serials.size();i++)
+        {
+            int serial=serials.get(i)-1;
+            EwokList.get(serial).release();
+        }
+        Diary.getInstance().setC3POFinish();
+        Diary.getInstance().incAtt();
+//        LeiaMicroservice.getFuture()[serial].resolve("");
+    }
 }
