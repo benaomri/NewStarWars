@@ -1,16 +1,10 @@
 package bgu.spl.mics.application.services;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Vector;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
-import bgu.spl.mics.CallbackImpl;
-import bgu.spl.mics.Message;
-import bgu.spl.mics.MessageBusImpl;
-import bgu.spl.mics.MicroService;
-import bgu.spl.mics.application.messages.AttackEvent;
-import bgu.spl.mics.application.messages.TerminateBroadCast;
+import bgu.spl.mics.*;
+import bgu.spl.mics.application.messages.*;
 import bgu.spl.mics.application.passiveObjects.Attack;
 import bgu.spl.mics.application.passiveObjects.Diary;
 import bgu.spl.mics.application.Main;
@@ -25,20 +19,26 @@ import bgu.spl.mics.application.Main;
  * You MAY change constructor signatures and even add new public constructors.
  */
 public class LeiaMicroservice extends MicroService {
-	private Attack[] attacks;
-    private Map<Message, CallbackImpl> callbackMap;
+    private Attack[] attacks;
+    static AtomicBoolean FinishedSend;
+    static   HashMap<Class<? extends Message>,Future<Boolean>[]> FutureMap;
+    private Future<Boolean>[]futures;
+    private LeiaMFinishAtt leiaMFinishAtt;
 
 
     public LeiaMicroservice(Attack[] attacks) {
         super("Leia");
-		this.attacks = attacks;
+        this.attacks = attacks;
+        FinishedSend=new AtomicBoolean(false);
+        FutureMap=new HashMap<>();
+        FutureMap.put(AttackEvent.class,new Future[attacks.length]);
+        FutureMap.put(DeactivationEvent.class,new Future[1]);
+        FutureMap.put(BombDestroyerEvent.class,new Future[1]);
+
     }
 
     @Override
     protected void initialize() {
-        MessageBusImpl.getInstance().register(this);
-        subscribeBroadcast(TerminateBroadCast.class, c -> terminate());
-
         while (Main.CDL.getCount()>0)
         {
             try {
@@ -46,30 +46,45 @@ public class LeiaMicroservice extends MicroService {
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-
         }
-
+        MessageBusImpl.getInstance().register(this);
+        subscribeBroadcast(TerminateBroadCast.class, c -> terminate());
+        subscribeBroadcast(LeiaMFinishAtt.class,c ->changeComplete(leiaMFinishAtt.getSerial()) );
         sendAttEvent();
-
 
 
     }
     private void sendAttEvent(){
+        int i=0;
         for(Attack att:attacks){
-            sendEvent(new AttackEvent(att.getDuration(),att.getSerials()));
+            futures[i]=sendEvent(new AttackEvent(att.getDuration(),att.getSerials(),i));
+
+            i++;
         }
-
-
     }
 
-    public void printAtt()
+    public static  Future[] getFuture()
     {
-        for(Attack att:attacks)
-            System.out.println(att);
+        if (FutureMap!=null)
+            return  FutureMap.get(AttackEvent.class);
+        return null;
     }
+
     @Override
     protected void close()
     {
         Diary.getInstance().setLeiaTerminate();
     }
+
+    public void changeComplete(int i){
+        futures[i].resolve(true);
+    }
+    public boolean isComplete(){
+        for (Future<Boolean> future : futures) {
+            if (!future.isDone())
+                return false;
+        }
+        return true;
+    }
+
 }

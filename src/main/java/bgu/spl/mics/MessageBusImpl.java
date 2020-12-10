@@ -65,6 +65,8 @@ public class MessageBusImpl<microServiceVector> implements MessageBus {
 		if (!msgBusEV.contains(type))
 			msgBusEV.put(type,new Vector<>());
 		msgBusEV.get(type).add(m.hashCode());
+		System.out.println("Inserting- "+m.hashCode()+" "+m.getName());
+		System.out.println(msgBusEV.toString());
 
 	}
 
@@ -102,16 +104,26 @@ public class MessageBusImpl<microServiceVector> implements MessageBus {
 	@Override
 	public synchronized <T> Future sendEvent(Event<T> e) {
 		Vector<Integer> toRoundRobin= msgBusEV.get(e.getClass());//
+		for(Integer serial:toRoundRobin)
+			System.out.println(serial);
+
 		Integer chosenMicro= round_robin(e,toRoundRobin);//send to round robin all microservice that subscribe to this event
 		msgBusMS.get(chosenMicro).add(e);
 		notifyAll();
-        return msgBusFuture.get(e);
+		return msgBusFuture.get(e);
+	}
+	private  void printMSG()
+	{
+		System.out.println(msgBusMS.toString());
 	}
 
 	@Override
 	public void register(MicroService m) {
-		msgBusMS.put(m.hashCode(),new Vector<Message>());
-		System.out.println("Has Been Registered successfully "+m.getName());
+		if(!msgBusMS.contains(m.hashCode())) {
+			msgBusMS.put(m.hashCode(), new Vector<Message>());
+			System.out.println(m.getName() + "," + m.hashCode() + " Has Been Registered successfully");
+			printMSG();
+		}
 	}
 
 	@Override
@@ -127,11 +139,12 @@ public class MessageBusImpl<microServiceVector> implements MessageBus {
 		while(msgBusMS.get(m.hashCode()).isEmpty()){//wait until is massage to take
 			wait();
 		}
-		return  msgBusMS.get(m.hashCode()).get(0);
+		Message msgOut=msgBusMS.get(m.hashCode()).get(0);
+		msgBusMS.get(m.hashCode()).remove(0);
+		return  msgOut;
 	}
 
 	private Integer round_robin(Event e,Vector<Integer> microSVector){
-		System.out.println(microSVector==null);
 		Integer microHashCode= microSVector.firstElement();
 		msgBusEV.get(e.getClass()).remove(0);
 		msgBusEV.get(e.getClass()).add(microHashCode);//add to the end of the quque

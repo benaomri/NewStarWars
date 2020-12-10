@@ -1,10 +1,9 @@
 package bgu.spl.mics.application;
 
-import bgu.spl.mics.MessageBusImpl;
+
 import bgu.spl.mics.application.passiveObjects.*;
 import bgu.spl.mics.application.services.*;
 import com.google.gson.Gson;
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
@@ -20,9 +19,16 @@ public class Main {
 	public static CountDownLatch CDL;
 
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, InterruptedException {
 		CDL=new CountDownLatch(4);
 		Init("/home/spl211/IdeaProjects/StarWars/src/main/input.json");
+		class trheadJoin{
+
+			}
+
+
+		join.start();
+		join.join();
 		Simulate();
 		outGson();
 
@@ -33,7 +39,7 @@ public class Main {
 	public static void Init(String path) throws IOException {
 		InputApp input= JsonInputReader.getInputFromJson(path);
 		LeiaMicroservice l=new LeiaMicroservice(input.getAttacks());
-		leia=new Thread(l);
+		leia=new Thread(new LeiaMicroservice(input.getAttacks()));
 		hanSolo=new Thread(new HanSoloMicroservice());
 		c3po=new Thread(new C3POMicroservice());
 		lando=new Thread(new LandoMicroservice(input.getLando()));
@@ -41,13 +47,17 @@ public class Main {
 		ewoks=Ewoks.getInstance(input.getEwoks());
 	}
 
+
+
 	public static void Simulate() {
+
 
 		hanSolo.start();
 		c3po.start();
 		lando.start();
 		r2d2.start();
 		leia.start();
+
 
 
 
