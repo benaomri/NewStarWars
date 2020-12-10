@@ -22,9 +22,9 @@ public class Main {
 
 	public static void main(String[] args) throws IOException {
 		CDL=new CountDownLatch(4);
-		Init("/home/spl211/IdeaProjects/StarWars/src/main/input.json");
-		Simulate();
-		outGson("/home/spl211/IdeaProjects/StarWars/src/main/output.json");
+		Init("/home/spl211/IdeaProjects/NewStarWars/src/main/input.json");
+//		Simulate();
+		outGson("/home/spl211/IdeaProjects/NewStarWars/src/main/output.json");
 	}
 
 
