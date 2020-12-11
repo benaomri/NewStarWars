@@ -18,7 +18,6 @@ public class Ewoks {
     private Vector<Ewok> EwokList;
     private  static Ewoks instance=null;
 
-
     /**
      * Constructor
      * get  @param   numberOfEwoks

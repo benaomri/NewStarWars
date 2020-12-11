@@ -27,17 +27,6 @@ public class Main {
 			CDL = new CountDownLatch(4);
 			CDL_Gson = new CountDownLatch(4);
 			Init("/home/spl211/IdeaProjects/NewStarWars/src/main/input.json");
-//		class toRun implements Runnable{
-//			public toRun(){}
-//			public void run(){
-//				Simulate();
-//				}
-//			}
-//		Thread Run=new Thread(new toRun());
-//		Run.start();
-//
-//			Run.join();
-
 			Simulate();
 			while (CDL_Gson.getCount() > 0) {
 				try {
