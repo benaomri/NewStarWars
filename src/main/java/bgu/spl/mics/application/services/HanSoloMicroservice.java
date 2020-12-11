@@ -67,7 +67,7 @@ public class HanSoloMicroservice extends MicroService {
             int serial=serials.get(i)-1;
             EwokList.get(serial).release();
         }
-        MessageBusImpl.getInstance().sendBroadcast(new LeiaMFinishAtt(a.getSerial()));
+        MessageBusImpl.getInstance().sendBroadcast(new LeiaMFinishAtt(a));
         Diary.getInstance().setHanSoloFinish();
         Diary.getInstance().incAtt();
     }

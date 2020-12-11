@@ -77,7 +77,7 @@ public class MessageBusImpl<microServiceVector> implements MessageBus {
 
 	@Override @SuppressWarnings("unchecked")
 	public <T> void complete(Event<T> e, T result) {
-		msgBusFuture.get(e.hashCode()).resolve(true);
+		msgBusFuture.get(e.hashCode()).resolve((Boolean) result);
 
 	}
 
@@ -107,10 +107,7 @@ public class MessageBusImpl<microServiceVector> implements MessageBus {
 		notifyAll();
         return msgBusFuture.get(e.hashCode());
 	}
-	private  void printMSG()
-	{
-		System.out.println(msgBusMS.toString());
-	}
+
 	@Override
 	public  void register(MicroService m) {
 		thisLock.writeLock().lock();
@@ -126,7 +123,29 @@ public class MessageBusImpl<microServiceVector> implements MessageBus {
 
 	@Override
 	public void unregister(MicroService m) {
+
 		msgBusMS.remove(m.hashCode());
+		for (Class<? extends Broadcast> broad:msgBusB.keySet())
+		{
+			if(msgBusB.get(broad).contains(m.hashCode()))
+				msgBusB.get(broad).removeElement(m.hashCode());
+		}
+		for (Class<? extends Event> event:msgBusEV.keySet())
+		{
+			if(msgBusEV.get(event).contains(m.hashCode()))
+				msgBusEV.get(event).removeElement(m.hashCode());
+		}
+
+
+	}
+
+
+	public void printAll()
+	{
+		System.out.println(msgBusEV);
+		System.out.println(msgBusB);
+		System.out.println(msgBusFuture);
+
 	}
 
 	public void clear()

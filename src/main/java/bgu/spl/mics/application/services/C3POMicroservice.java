@@ -70,7 +70,7 @@ public class C3POMicroservice extends MicroService {
             int serial=serials.get(i)-1;
             EwokList.get(serial).release();
         }
-        MessageBusImpl.getInstance().sendBroadcast(new LeiaMFinishAtt(a.getSerial()));
+        MessageBusImpl.getInstance().sendBroadcast(new LeiaMFinishAtt(a));
         Diary.getInstance().setC3POFinish();
         Diary.getInstance().incAtt();
     }

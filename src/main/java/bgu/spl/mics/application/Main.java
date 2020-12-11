@@ -36,7 +36,7 @@ public class Main {
 				}
 			}
 			outGson("/home/spl211/IdeaProjects/NewStarWars/src/main/output.json");
-			MessageBusImpl.getInstance().clear();
+			System.out.println("finished: "+i);
 		}
 	}
 
@@ -62,7 +62,6 @@ public class Main {
 	}
 
 	public static void outGson(String Path) {
-		System.out.println("Here");
 		try {
 			Gson outGson=new Gson();
 			Diary diary=Diary.getInstance();

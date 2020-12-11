@@ -50,7 +50,7 @@ public class LeiaMicroservice extends MicroService {
 
         MessageBusImpl.getInstance().register(this);
         subscribeBroadcast(TerminateBroadCast.class, c -> terminate());
-        subscribeBroadcast(LeiaMFinishAtt.class,(LeiaMFinishAtt l)->changeComplete(l.getSerial()) );
+        subscribeBroadcast(LeiaMFinishAtt.class,(LeiaMFinishAtt l)->changeComplete(l.getEvent()) );
         sendAttEvent();
 
 
@@ -59,17 +59,11 @@ public class LeiaMicroservice extends MicroService {
         int i=0;
         for(Attack att:attacks){
             futures[i]=sendEvent(new AttackEvent(att.getDuration(),att.getSerials(),i));
-
             i++;
         }
     }
 
-    public static  Future[] getFuture()
-    {
-        if (FutureMap!=null)
-            return  FutureMap.get(AttackEvent.class);
-        return null;
-    }
+
 
     @Override
     protected void close()
@@ -77,8 +71,8 @@ public class LeiaMicroservice extends MicroService {
         Diary.getInstance().setLeiaTerminate();
     }
 
-    public void changeComplete(int i){
-        futures[i].resolve(true);
+    public void changeComplete(Event<Boolean> e){
+        MessageBusImpl.getInstance().complete(e,true);
         if(isComplete())
         {
             MessageBusImpl.getInstance().sendEvent(new DeactivationEvent());
