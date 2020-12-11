@@ -6,13 +6,11 @@ import bgu.spl.mics.application.Main;
 import bgu.spl.mics.application.messages.AttackEvent;
 import bgu.spl.mics.application.messages.LeiaMFinishAtt;
 import bgu.spl.mics.application.messages.TerminateBroadCast;
-import bgu.spl.mics.application.passiveObjects.Attack;
 import bgu.spl.mics.application.passiveObjects.Diary;
 import bgu.spl.mics.application.passiveObjects.Ewok;
 import bgu.spl.mics.application.passiveObjects.Ewoks;
 
 import java.util.List;
-import java.util.Map;
 import java.util.Vector;
 
 /**
@@ -33,7 +31,7 @@ public class HanSoloMicroservice extends MicroService {
     @Override
     protected void initialize() {
         MessageBusImpl.getInstance().register(this);
-        subscribeEvent(AttackEvent.class,(AttackEvent att)->HanAtt(att)) ;
+        subscribeEvent(AttackEvent.class, this::HanAtt) ;
         subscribeBroadcast(TerminateBroadCast.class,c -> terminate());
         Main.CDL.countDown();
 
@@ -50,9 +48,8 @@ public class HanSoloMicroservice extends MicroService {
         long duration=a.getDuration();
 
         //Acquire
-        for (int i=0;i<serials.size();i++)
-        {
-            int serial=serials.get(i)-1;
+        for (Integer value : serials) {
+            int serial = value - 1;
             EwokList.get(serial).acquire();
         }
         try {
@@ -62,9 +59,8 @@ public class HanSoloMicroservice extends MicroService {
         }
 
         //Release
-        for (int i=0;i<serials.size();i++)
-        {
-            int serial=serials.get(i)-1;
+        for (Integer integer : serials) {
+            int serial = integer - 1;
             EwokList.get(serial).release();
         }
         MessageBusImpl.getInstance().sendBroadcast(new LeiaMFinishAtt(a));

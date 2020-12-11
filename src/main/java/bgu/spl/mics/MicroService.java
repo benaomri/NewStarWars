@@ -2,13 +2,7 @@ package bgu.spl.mics;
 
 
 import bgu.spl.mics.application.Main;
-import bgu.spl.mics.application.messages.DeactivationEvent;
-import bgu.spl.mics.application.passiveObjects.Diary;
-import bgu.spl.mics.application.services.LeiaMicroservice;
-
-import javax.security.auth.callback.CallbackHandler;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * The MicroService is an abstract class that any micro-service in the system
@@ -30,7 +24,7 @@ import java.util.Map;
  */
 public abstract class MicroService  implements Runnable {
     private final String name;
-    private HashMap<Class,Callback> callbackMap;
+    private final HashMap<Class,Callback> callbackMap;
 
 
     /**
@@ -135,7 +129,6 @@ public abstract class MicroService  implements Runnable {
      */
     protected final <T> void complete(Event<T> e, T result) {
         MessageBusImpl.getInstance().complete(e,result);
-
     }
 
     /**
@@ -168,10 +161,9 @@ public abstract class MicroService  implements Runnable {
      */
     @Override
     public final void run() {
-        Future futureToget;
-        initialize();//each init call suscribe event/broadcast
+        initialize();//each init call subscribe event/broadcast
 
-        //We wiil Interpt the Theread in the Terminate Function when we will get the TerminateBroadCast
+        //We will Interrupted the Thread in the Terminate Function when we will get the TerminateBroadCast
         while (!Thread.currentThread().isInterrupted()) {
             //Try to Get Message
             try {

@@ -12,11 +12,11 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Do not add to this class nothing but a single constructor, getters and setters.
  */
 public class Diary {
-    private static class SingeltonDiaryHolder{
-        private static Diary instance=new Diary();
+    private static class SingletonDiaryHolder {
+        private static final Diary instance=new Diary();
     }
     //Fields
-    private AtomicInteger totalAttacks;
+    private final AtomicInteger totalAttacks;
     private long HanSoloFinish;
     private long C3POFinish;
     private long R2D2Deactivate;
@@ -25,9 +25,6 @@ public class Diary {
     private long C3POTerminate;
     private long R2D2Terminate;
     private long LandoTerminate;
-
-    //Singleton reference
-    private  static Diary instance=null;
 
 
     /**
@@ -47,7 +44,7 @@ public class Diary {
     }
 
     public static Diary getInstance(){
-       return SingeltonDiaryHolder.instance;
+       return SingletonDiaryHolder.instance;
     }
 
     /**
@@ -60,26 +57,10 @@ public class Diary {
 
     /**
      *
-     * @return LeiaTerminate
-     */
-    public long getLeiaTerminate() {
-        return LeiaTerminate;
-    }
-
-    /**
-     *
      * set LeiaTerminate
      */
     public void setLeiaTerminate() {
         LeiaTerminate = System.currentTimeMillis()- Main.getStartTime();
-    }
-
-    /**
-     *
-     * @return LandoTerminate
-     */
-    public long getLandoTerminate() {
-        return LandoTerminate;
     }
 
     /**
@@ -92,27 +73,12 @@ public class Diary {
 
     /**
      *
-     * @return R2D2Terminate
-     */
-    public long getR2D2Terminate() {
-        return R2D2Terminate;
-    }
-
-    /**
-     *
      * set R2D2Terminate
      */
     public void setR2D2Terminate() {
         R2D2Terminate = System.currentTimeMillis()-Main.getStartTime();
     }
 
-    /**
-     *
-     * @return C3POTerminate
-     */
-    public long getC3POTerminate() {
-        return C3POTerminate;
-    }
 
     /**
      *
@@ -122,13 +88,6 @@ public class Diary {
         C3POTerminate = System.currentTimeMillis()-Main.getStartTime();
     }
 
-    /**
-     *
-     * @return HanSoloTerminate
-     */
-    public long getHanSoloTerminate() {
-        return HanSoloTerminate;
-    }
 
 
     /**
@@ -140,13 +99,6 @@ public class Diary {
         HanSoloTerminate =System.currentTimeMillis()- Main.getStartTime();
     }
 
-    /**
-     *
-     * @return R2D2Deactivate
-     */
-    public long getR2D2Deactivate() {
-        return R2D2Deactivate;
-    }
 
     /**
      *
@@ -154,14 +106,6 @@ public class Diary {
      */
     public void setR2D2Deactivate() {
         R2D2Deactivate =System.currentTimeMillis() - Main.getStartTime();
-    }
-
-    /**
-     *
-     * @return C3POFinish
-     */
-    public long getC3POFinish() {
-        return C3POFinish;
     }
 
     /**
@@ -174,22 +118,10 @@ public class Diary {
 
     /**
      *
-     * @return HanSoloFinish
-     */
-    public long getHanSoloFinish() {
-        return HanSoloFinish;
-    }
-
-    /**
-     *
      * set HanSoloFinish
      */
     public void setHanSoloFinish() {
         HanSoloFinish = System.currentTimeMillis()-Main.getStartTime();
-    }
-
-    public AtomicInteger getNumberOfAttacks() {
-        return totalAttacks;
     }
 
 

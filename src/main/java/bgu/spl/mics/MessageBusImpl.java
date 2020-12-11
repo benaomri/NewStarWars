@@ -1,9 +1,7 @@
 package bgu.spl.mics;
 
 import java.util.Vector;
-import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -14,23 +12,22 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
  * Only private fields and methods can be added to this class.
  */
 public class MessageBusImpl<microServiceVector> implements MessageBus {
-	private static class SingeltonMasBusHolder{
-		private static MessageBusImpl instance=new MessageBusImpl();
+	private static class SingletonMasBusHolder {
+		private static final MessageBusImpl instance=new MessageBusImpl();
 	}
 
-	private  static MessageBusImpl instance=null;//singleton expression
 	ReadWriteLock thisLock=new ReentrantReadWriteLock();
 	/**
 	 * We Use 4 Maps:
-	 * 1. Key: MS Hash Code, val: Messeges vector
+	 * 1. Key: MS Hash Code, val: Messages vector
 	 * 2. Key: Event , val: MS string that subscribe it
 	 * 3. Key: Broadcast , val: MS string that subscribe it
 	 * 4. Key: Event , val: Future
 	 */
-	private  ConcurrentHashMap<Integer, Vector<Message>> msgBusMS;
-	private  ConcurrentHashMap<Class<? extends Event>, Vector<Integer>> msgBusEV;
-	private ConcurrentHashMap<Class<? extends Broadcast>, Vector<Integer>> msgBusB;
-	private ConcurrentHashMap<Integer, Future<Boolean>> msgBusFuture;
+	private final  ConcurrentHashMap<Integer, Vector<Message>> msgBusMS;
+	private final ConcurrentHashMap<Class<? extends Event>, Vector<Integer>> msgBusEV;
+	private final ConcurrentHashMap<Class<? extends Broadcast>, Vector<Integer>> msgBusB;
+	private final ConcurrentHashMap<Integer, Future<Boolean>> msgBusFuture;
 
 
 	/**
@@ -45,18 +42,18 @@ public class MessageBusImpl<microServiceVector> implements MessageBus {
 	}
 
 	/**
-	 * Creating singlteon MessageBusImpl or Return the same instance
-	 * @return Singelton instance of MessageBusImpl
+	 * Creating singleton MessageBusImpl or Return the same instance
+	 * @return singleton instance of MessageBusImpl
 	 */
 	public static MessageBusImpl getInstance() {
-		return SingeltonMasBusHolder.instance;
+		return SingletonMasBusHolder.instance;
 	}
 
 	/**
 	 * We will add the MicroService to the vector of the Event
 	 * @param type The type to subscribe to,
 	 * @param m    The subscribing micro-service.
-	 * @param <T>
+	 * @param <T>  The type of Event
 	 */
 	@Override
 	public synchronized  <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
@@ -89,14 +86,14 @@ public class MessageBusImpl<microServiceVector> implements MessageBus {
 		for(Integer HashCode:broadcastMicroS){//insert to each microservice the broadcast
 			msgBusMS.get(HashCode).add(b);
 		}
-		notifyAll();//notify to all thered that is their new massage
+		notifyAll();//notify to all Thread that is their new massage
 	}
 
 	/**
 	 *
 	 * @param e     	The event to add to the queue.
 	 * @param <T>
-	 * @return
+	 * @return    return the Future that we create
 	 */
 	@Override
 	public synchronized <T> Future sendEvent(Event<T> e) {
@@ -113,7 +110,7 @@ public class MessageBusImpl<microServiceVector> implements MessageBus {
 		thisLock.writeLock().lock();
 		try {
 			if (!msgBusMS.containsKey(m.hashCode())) {
-				msgBusMS.put(m.hashCode(), new Vector<Message>());
+				msgBusMS.put(m.hashCode(), new Vector<>());
 			}
 		}
 		finally {
@@ -140,20 +137,6 @@ public class MessageBusImpl<microServiceVector> implements MessageBus {
 	}
 
 
-	public void printAll()
-	{
-		System.out.println(msgBusEV);
-		System.out.println(msgBusB);
-		System.out.println(msgBusFuture);
-
-	}
-
-	public void clear()
-	{
-		msgBusEV.clear();
-		msgBusFuture.clear();
-		msgBusB.clear();
-	}
 
 	@Override
 	public synchronized Message awaitMessage(MicroService m) throws InterruptedException {
@@ -171,7 +154,7 @@ public class MessageBusImpl<microServiceVector> implements MessageBus {
 	private Integer round_robin(Event e,Vector<Integer> microSVector){
 		Integer microHashCode= microSVector.firstElement();
 		msgBusEV.get(e.getClass()).remove(0);
-		msgBusEV.get(e.getClass()).add(microHashCode);//add to the end of the quque
+		msgBusEV.get(e.getClass()).add(microHashCode);
 		return microHashCode;
 	}
 

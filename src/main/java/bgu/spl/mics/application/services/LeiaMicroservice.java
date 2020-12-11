@@ -1,6 +1,6 @@
 package bgu.spl.mics.application.services;
 
-import java.util.*;
+
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import bgu.spl.mics.*;
@@ -19,20 +19,15 @@ import bgu.spl.mics.application.Main;
  * You MAY change constructor signatures and even add new public constructors.
  */
 public class LeiaMicroservice extends MicroService {
-    private Attack[] attacks;
+    private final Attack[] attacks;
     static AtomicBoolean FinishedSend;
-    static   HashMap<Class<? extends Message>,Future<Boolean>[]> FutureMap;
-    private Future<Boolean>[]futures;
+    private final Future[] futures;
 
 
     public LeiaMicroservice(Attack[] attacks) {
         super("Leia");
         this.attacks = attacks;
         FinishedSend=new AtomicBoolean(false);
-        FutureMap=new HashMap<>();
-        FutureMap.put(AttackEvent.class,new Future[attacks.length]);
-        FutureMap.put(DeactivationEvent.class,new Future[1]);
-        FutureMap.put(BombDestroyerEvent.class,new Future[1]);
         futures=new Future[attacks.length];
 
     }
@@ -72,14 +67,14 @@ public class LeiaMicroservice extends MicroService {
     }
 
     public void changeComplete(Event<Boolean> e){
-        MessageBusImpl.getInstance().complete(e,true);
+        complete(e,true);
         if(isComplete())
         {
             MessageBusImpl.getInstance().sendEvent(new DeactivationEvent());
         }
     }
     public boolean isComplete(){
-        for (Future<Boolean> future : futures) {
+        for (Future future : futures) {
             if (!future.isDone())
                 return false;
         }

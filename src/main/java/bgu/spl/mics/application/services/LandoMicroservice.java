@@ -13,7 +13,7 @@ import bgu.spl.mics.application.passiveObjects.Diary;
  * You MAY change constructor signatures and even add new public constructors.
  */
 public class LandoMicroservice  extends MicroService {
-    private long duration;
+    private final long duration;
 
     public LandoMicroservice(long duration) {
         super("Lando");
