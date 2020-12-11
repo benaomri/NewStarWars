@@ -1,6 +1,7 @@
 package bgu.spl.mics.application;
 
 
+import bgu.spl.mics.MessageBusImpl;
 import bgu.spl.mics.application.passiveObjects.*;
 import bgu.spl.mics.application.services.*;
 import com.google.gson.Gson;
@@ -22,9 +23,10 @@ public class Main {
 
 
 	public static void main(String[] args) throws IOException, InterruptedException {
-		CDL=new CountDownLatch(4);
-		CDL_Gson=new CountDownLatch(4);
-		Init("/home/spl211/IdeaProjects/NewStarWars/src/main/input.json");
+		for (int i=0;i<100;i++) {
+			CDL = new CountDownLatch(4);
+			CDL_Gson = new CountDownLatch(4);
+			Init("/home/spl211/IdeaProjects/NewStarWars/src/main/input.json");
 //		class toRun implements Runnable{
 //			public toRun(){}
 //			public void run(){
@@ -36,18 +38,17 @@ public class Main {
 //
 //			Run.join();
 
-		Simulate();
-		while (CDL_Gson.getCount()>0)
-		{
-			try {
-				CDL_Gson.await();
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+			Simulate();
+			while (CDL_Gson.getCount() > 0) {
+				try {
+					CDL_Gson.await();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
 			}
+			outGson("/home/spl211/IdeaProjects/NewStarWars/src/main/output.json");
+			MessageBusImpl.getInstance().clear();
 		}
-		outGson("/home/spl211/IdeaProjects/NewStarWars/src/main/output.json");
-
-
 	}
 
 

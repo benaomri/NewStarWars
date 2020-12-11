@@ -27,7 +27,6 @@ public class LandoMicroservice  extends MicroService {
         subscribeEvent(BombDestroyerEvent.class, c -> Bomb());
         Main.CDL.countDown();
 
-
     }
     @Override
     protected void close()

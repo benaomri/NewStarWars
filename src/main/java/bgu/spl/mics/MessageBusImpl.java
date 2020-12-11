@@ -4,6 +4,8 @@ import java.util.Vector;
 import java.util.concurrent.BlockingDeque;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 
 /**
@@ -12,8 +14,12 @@ import java.util.concurrent.LinkedBlockingDeque;
  * Only private fields and methods can be added to this class.
  */
 public class MessageBusImpl<microServiceVector> implements MessageBus {
-	private  static MessageBusImpl instance=null;//singleton expression
+	private static class SingeltonMasBusHolder{
+		private static MessageBusImpl instance=new MessageBusImpl();
+	}
 
+	private  static MessageBusImpl instance=null;//singleton expression
+	ReadWriteLock thisLock=new ReentrantReadWriteLock();
 	/**
 	 * We Use 4 Maps:
 	 * 1. Key: MS Hash Code, val: Messeges vector
@@ -21,12 +27,10 @@ public class MessageBusImpl<microServiceVector> implements MessageBus {
 	 * 3. Key: Broadcast , val: MS string that subscribe it
 	 * 4. Key: Event , val: Future
 	 */
-	private Vector microServiceVector;
 	private  ConcurrentHashMap<Integer, Vector<Message>> msgBusMS;
 	private  ConcurrentHashMap<Class<? extends Event>, Vector<Integer>> msgBusEV;
 	private ConcurrentHashMap<Class<? extends Broadcast>, Vector<Integer>> msgBusB;
 	private ConcurrentHashMap<Integer, Future<Boolean>> msgBusFuture;
-	private BlockingDeque bQueue;
 
 
 	/**
@@ -38,19 +42,14 @@ public class MessageBusImpl<microServiceVector> implements MessageBus {
 		msgBusEV = new ConcurrentHashMap<>(); //We had to this when MS is subscribe it
 		msgBusFuture = new ConcurrentHashMap<>();
 		msgBusB=new ConcurrentHashMap<>();
-		bQueue=new LinkedBlockingDeque();
 	}
 
 	/**
 	 * Creating singlteon MessageBusImpl or Return the same instance
 	 * @return Singelton instance of MessageBusImpl
 	 */
-	public static MessageBusImpl getInstance(){
-		if(instance==null)
-		{
-			instance=new MessageBusImpl();
-		}
-		return instance;
+	public static MessageBusImpl getInstance() {
+		return SingeltonMasBusHolder.instance;
 	}
 
 	/**
@@ -113,15 +112,28 @@ public class MessageBusImpl<microServiceVector> implements MessageBus {
 		System.out.println(msgBusMS.toString());
 	}
 	@Override
-	public synchronized void register(MicroService m) {
-		if(!msgBusMS.containsKey(m.hashCode())) {
-			msgBusMS.put(m.hashCode(), new Vector<Message>());
+	public  void register(MicroService m) {
+		thisLock.writeLock().lock();
+		try {
+			if (!msgBusMS.containsKey(m.hashCode())) {
+				msgBusMS.put(m.hashCode(), new Vector<Message>());
+			}
+		}
+		finally {
+			thisLock.writeLock().unlock();
 		}
 	}
 
 	@Override
 	public void unregister(MicroService m) {
 		msgBusMS.remove(m.hashCode());
+	}
+
+	public void clear()
+	{
+		msgBusEV.clear();
+		msgBusFuture.clear();
+		msgBusB.clear();
 	}
 
 	@Override

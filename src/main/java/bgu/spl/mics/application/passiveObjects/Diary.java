@@ -12,6 +12,9 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Do not add to this class nothing but a single constructor, getters and setters.
  */
 public class Diary {
+    private static class SingeltonDiaryHolder{
+        private static Diary instance=new Diary();
+    }
     //Fields
     private AtomicInteger totalAttacks;
     private long HanSoloFinish;
@@ -44,11 +47,7 @@ public class Diary {
     }
 
     public static Diary getInstance(){
-        if(instance==null)
-        {
-            instance=new Diary();
-        }
-        return instance;
+       return SingeltonDiaryHolder.instance;
     }
 
     /**
