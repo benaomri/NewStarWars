@@ -18,25 +18,34 @@ public class Main {
 	private static Ewoks ewoks;
 	private static Thread leia,hanSolo,c3po,lando,r2d2;
 	public static CountDownLatch CDL;
+	public static CountDownLatch CDL_Gson;
 
 
-	public static void main(String[] args) throws IOException {
+	public static void main(String[] args) throws IOException, InterruptedException {
 		CDL=new CountDownLatch(4);
-		Init("/home/spl211/IdeaProjects/StarWars/src/main/input.json");
-		class toRun implements Runnable{
-			public toRun(){}
-			public void run(){
-				Simulate();
-				}
+		CDL_Gson=new CountDownLatch(4);
+		Init("/home/spl211/IdeaProjects/NewStarWars/src/main/input.json");
+//		class toRun implements Runnable{
+//			public toRun(){}
+//			public void run(){
+//				Simulate();
+//				}
+//			}
+//		Thread Run=new Thread(new toRun());
+//		Run.start();
+//
+//			Run.join();
+
+		Simulate();
+		while (CDL_Gson.getCount()>0)
+		{
+			try {
+				CDL_Gson.await();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
-		Thread Run=new Thread(new toRun());
-		Run.start();
-		try {
-			Run.join();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
 		}
-		outGson("/home/spl211/IdeaProjects/StarWars/src/main/output.json");
+		outGson("/home/spl211/IdeaProjects/NewStarWars/src/main/output.json");
 
 
 	}
@@ -63,6 +72,7 @@ public class Main {
 	}
 
 	public static void outGson(String Path) {
+		System.out.println("Here");
 		try {
 			Gson outGson=new Gson();
 			Diary diary=Diary.getInstance();

@@ -6,21 +6,12 @@ import bgu.spl.mics.application.services.LeiaMicroservice;
 
 
 public class DeactivationEvent implements Event<Boolean> {
-    long duration;
+
     public DeactivationEvent() {
 
     }
 
-    public DeactivationEvent(long duration)
-    {
-        this.duration=duration;
-    }
 
-    public void Deactivate() throws InterruptedException {
-        Thread.sleep(duration);
-        Diary.getInstance().setR2D2Deactivate();
-        MessageBusImpl.getInstance().sendEvent(new BombDestroyerEvent());
-    }
 
 
 }

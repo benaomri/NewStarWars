@@ -1,6 +1,7 @@
 package bgu.spl.mics;
 
 
+import bgu.spl.mics.application.Main;
 import bgu.spl.mics.application.messages.DeactivationEvent;
 import bgu.spl.mics.application.passiveObjects.Diary;
 import bgu.spl.mics.application.services.LeiaMicroservice;
@@ -149,6 +150,7 @@ public abstract class MicroService  implements Runnable {
     protected final void terminate() {
         MessageBusImpl.getInstance().unregister(this);
         close();
+        Main.CDL_Gson.countDown();
         Thread.currentThread().interrupt();
     }
 
@@ -174,9 +176,7 @@ public abstract class MicroService  implements Runnable {
             //Try to Get Message
             try {
                 Message msgFromQ = MessageBusImpl.getInstance().awaitMessage(this);
-                System.out.println(this.name + " is Handling msg- " + msgFromQ.getClass());
                 callbackMap.get(msgFromQ.getClass()).call(msgFromQ);
-                System.out.println(this.name + " Finished Handling msg- " + msgFromQ.getClass());
 
             } catch (InterruptedException e) {
                 e.printStackTrace();

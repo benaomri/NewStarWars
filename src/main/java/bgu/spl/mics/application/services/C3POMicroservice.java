@@ -33,7 +33,6 @@ public class C3POMicroservice extends MicroService {
     @Override
     protected void initialize() {
         MessageBusImpl.getInstance().register(this);
-        System.out.println(AttackEvent.class);
         subscribeBroadcast(TerminateBroadCast.class, c -> terminate());
         subscribeEvent(AttackEvent.class, (AttackEvent att)->C3POatt(att));
         Main.CDL.countDown();
@@ -51,7 +50,6 @@ public class C3POMicroservice extends MicroService {
         List<Integer> serials=a.getSerials();
         long duration=a.getDuration();
 
-        System.out.println(serials);
         //Acquire
         for (int i=0;i<serials.size();i++)
         {

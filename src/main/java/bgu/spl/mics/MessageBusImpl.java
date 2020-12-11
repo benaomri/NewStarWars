@@ -22,8 +22,8 @@ public class MessageBusImpl<microServiceVector> implements MessageBus {
 	 * 4. Key: Event , val: Future
 	 */
 	private Vector microServiceVector;
-	private volatile ConcurrentHashMap<Integer, Vector<Message>> msgBusMS;
-	private volatile ConcurrentHashMap<Class<? extends Event>, Vector<Integer>> msgBusEV;
+	private  ConcurrentHashMap<Integer, Vector<Message>> msgBusMS;
+	private  ConcurrentHashMap<Class<? extends Event>, Vector<Integer>> msgBusEV;
 	private ConcurrentHashMap<Class<? extends Broadcast>, Vector<Integer>> msgBusB;
 	private ConcurrentHashMap<Integer, Future<Boolean>> msgBusFuture;
 	private BlockingDeque bQueue;
@@ -64,8 +64,6 @@ public class MessageBusImpl<microServiceVector> implements MessageBus {
 		if (!msgBusEV.containsKey(type))
 			msgBusEV.put(type,new Vector<>());
 		msgBusEV.get(type).add(m.hashCode());
-		System.out.println("Inserting- "+m.hashCode()+" "+m.getName());
-		System.out.println(msgBusEV.toString());
 	}
 
 
@@ -74,8 +72,6 @@ public class MessageBusImpl<microServiceVector> implements MessageBus {
 		if (!msgBusB.containsKey(type))
 			msgBusB.put(type,new Vector<>());
 		msgBusB.get(type).add(m.hashCode());
-		System.out.println("Inserting B- "+m.hashCode()+" "+m.getName());
-		System.out.println(msgBusB.toString());
 	}
 
 
@@ -106,8 +102,6 @@ public class MessageBusImpl<microServiceVector> implements MessageBus {
 	@Override
 	public synchronized <T> Future sendEvent(Event<T> e) {
 		Vector<Integer> toRoundRobin= msgBusEV.get(e.getClass());//
-		for(Integer serial:toRoundRobin)
-			System.out.println(serial);
 		Integer chosenMicro= round_robin(e,toRoundRobin);//send to round robin all microservice that subscribe to this event
 		msgBusMS.get(chosenMicro).add(e);
 		msgBusFuture.put(e.hashCode(),new Future());
@@ -122,8 +116,6 @@ public class MessageBusImpl<microServiceVector> implements MessageBus {
 	public synchronized void register(MicroService m) {
 		if(!msgBusMS.containsKey(m.hashCode())) {
 			msgBusMS.put(m.hashCode(), new Vector<Message>());
-			System.out.println(m.getName() + "," + m.hashCode() + " Has Been Registered successfully");
-			printMSG();
 		}
 	}
 

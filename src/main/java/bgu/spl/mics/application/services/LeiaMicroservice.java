@@ -47,6 +47,7 @@ public class LeiaMicroservice extends MicroService {
                 e.printStackTrace();
             }
         }
+
         MessageBusImpl.getInstance().register(this);
         subscribeBroadcast(TerminateBroadCast.class, c -> terminate());
         subscribeBroadcast(LeiaMFinishAtt.class,(LeiaMFinishAtt l)->changeComplete(l.getSerial()) );

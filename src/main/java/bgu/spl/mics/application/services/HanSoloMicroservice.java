@@ -33,7 +33,6 @@ public class HanSoloMicroservice extends MicroService {
     @Override
     protected void initialize() {
         MessageBusImpl.getInstance().register(this);
-        System.out.println(AttackEvent.class);
         subscribeEvent(AttackEvent.class,(AttackEvent att)->HanAtt(att)) ;
         subscribeBroadcast(TerminateBroadCast.class,c -> terminate());
         Main.CDL.countDown();
@@ -50,7 +49,6 @@ public class HanSoloMicroservice extends MicroService {
         List<Integer> serials=a.getSerials();
         long duration=a.getDuration();
 
-        System.out.println(serials);
         //Acquire
         for (int i=0;i<serials.size();i++)
         {
