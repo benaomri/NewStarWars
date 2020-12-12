@@ -3,12 +3,17 @@ package bgu.spl.mics.application.services;
 import bgu.spl.mics.MessageBusImpl;
 import bgu.spl.mics.application.Main;
 
-import bgu.spl.mics.Callback;
-import bgu.spl.mics.CallbackImpl;
+
 import bgu.spl.mics.MicroService;
 import bgu.spl.mics.application.messages.AttackEvent;
+import bgu.spl.mics.application.messages.LeiaMFinishAtt;
 import bgu.spl.mics.application.messages.TerminateBroadCast;
 import bgu.spl.mics.application.passiveObjects.Diary;
+import bgu.spl.mics.application.passiveObjects.Ewok;
+import bgu.spl.mics.application.passiveObjects.Ewoks;
+
+import java.util.List;
+import java.util.Vector;
 
 
 /**
@@ -27,10 +32,8 @@ public class C3POMicroservice extends MicroService {
     @Override
     protected void initialize() {
         MessageBusImpl.getInstance().register(this);
-        System.out.println(AttackEvent.class);
-
         subscribeBroadcast(TerminateBroadCast.class, c -> terminate());
-        subscribeEvent(AttackEvent.class, AttackEvent::att);
+        subscribeEvent(AttackEvent.class, this::C3POAtt);
         Main.CDL.countDown();
 
 
@@ -41,5 +44,30 @@ public class C3POMicroservice extends MicroService {
         Diary.getInstance().setC3POTerminate();
     }
 
+    private  void C3POAtt(AttackEvent a){
+        Vector<Ewok> EwokList= Ewoks.getInstance().getEwokList();
+        List<Integer> serials=a.getSerials();
+        long duration=a.getDuration();
+        //Acquire
+        for (Integer integer : serials) {
+            int serial = integer - 1;
+            EwokList.get(serial).acquire();
+        }
+        try {
 
+            Thread.sleep(duration);
+
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        //Release
+        for (Integer integer : serials) {
+            int serial = integer - 1;
+            EwokList.get(serial).release();
+        }
+        MessageBusImpl.getInstance().sendBroadcast(new LeiaMFinishAtt(a));
+        Diary.getInstance().setC3POFinish();
+        Diary.getInstance().incAtt();
+    }
 }

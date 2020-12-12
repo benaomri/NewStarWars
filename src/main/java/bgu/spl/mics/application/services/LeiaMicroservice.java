@@ -1,6 +1,6 @@
 package bgu.spl.mics.application.services;
 
-import java.util.*;
+
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import bgu.spl.mics.*;
@@ -19,21 +19,16 @@ import bgu.spl.mics.application.Main;
  * You MAY change constructor signatures and even add new public constructors.
  */
 public class LeiaMicroservice extends MicroService {
-    private Attack[] attacks;
+    private final Attack[] attacks;
     static AtomicBoolean FinishedSend;
-    static   HashMap<Class<? extends Message>,Future<Boolean>[]> FutureMap;
-    private Future<Boolean>[]futures;
-    private LeiaMFinishAtt leiaMFinishAtt;
+    private final Future[] futures;
 
 
     public LeiaMicroservice(Attack[] attacks) {
         super("Leia");
         this.attacks = attacks;
         FinishedSend=new AtomicBoolean(false);
-        FutureMap=new HashMap<>();
-        FutureMap.put(AttackEvent.class,new Future[attacks.length]);
-        FutureMap.put(DeactivationEvent.class,new Future[1]);
-        FutureMap.put(BombDestroyerEvent.class,new Future[1]);
+        futures=new Future[attacks.length];
 
     }
 
@@ -47,9 +42,10 @@ public class LeiaMicroservice extends MicroService {
                 e.printStackTrace();
             }
         }
+
         MessageBusImpl.getInstance().register(this);
         subscribeBroadcast(TerminateBroadCast.class, c -> terminate());
-        subscribeBroadcast(LeiaMFinishAtt.class,c ->changeComplete(leiaMFinishAtt.getSerial()) );
+        subscribeBroadcast(LeiaMFinishAtt.class,(LeiaMFinishAtt l)->changeComplete(l.getEvent()) );
         sendAttEvent();
 
 
@@ -58,17 +54,11 @@ public class LeiaMicroservice extends MicroService {
         int i=0;
         for(Attack att:attacks){
             futures[i]=sendEvent(new AttackEvent(att.getDuration(),att.getSerials(),i));
-
             i++;
         }
     }
 
-    public static  Future[] getFuture()
-    {
-        if (FutureMap!=null)
-            return  FutureMap.get(AttackEvent.class);
-        return null;
-    }
+
 
     @Override
     protected void close()
@@ -76,11 +66,15 @@ public class LeiaMicroservice extends MicroService {
         Diary.getInstance().setLeiaTerminate();
     }
 
-    public void changeComplete(int i){
-        futures[i].resolve(true);
+    public void changeComplete(Event<Boolean> e){
+        complete(e,true);
+        if(isComplete())
+        {
+            MessageBusImpl.getInstance().sendEvent(new DeactivationEvent());
+        }
     }
     public boolean isComplete(){
-        for (Future<Boolean> future : futures) {
+        for (Future future : futures) {
             if (!future.isDone())
                 return false;
         }

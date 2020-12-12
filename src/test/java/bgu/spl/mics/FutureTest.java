@@ -76,12 +76,13 @@ class FutureTest {
      * Check if we get the same str as we inserted when we resolved the task
      */
     @Test
-    void testGet() {
+    void Get() {
         String str = "Result";
         assertFalse(futureToTest.isDone(),"Check if isDone is False ");
-        futureToTest.get(300,TimeUnit.MILLISECONDS);
+//        futureToTest.get(300,TimeUnit.MILLISECONDS);
         assertFalse(futureToTest.isDone(),"Check if isDone is False after try to get in the first time");
         futureToTest.resolve(str);
-        assertEquals(futureToTest.get(300,TimeUnit.MILLISECONDS),str,"Check if the result we get Equal to the result we Send");
+        assertEquals(futureToTest.get(),str,"Check if the result we get Equal to the result we Send");
+        assertEquals(futureToTest.get(100,TimeUnit.MILLISECONDS),str);
     }
 }

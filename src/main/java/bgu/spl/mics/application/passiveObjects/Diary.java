@@ -1,6 +1,8 @@
 package bgu.spl.mics.application.passiveObjects;
 
 
+import bgu.spl.mics.application.Main;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -10,8 +12,17 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Do not add to this class nothing but a single constructor, getters and setters.
  */
 public class Diary {
+
+
+    public void resetNumberAttacks() {
+        totalAttacks.set(0);
+    }
+
+    private static class SingletonDiaryHolder {
+        private static final Diary instance=new Diary();
+    }
     //Fields
-    private AtomicInteger totalAttacks;
+    private final AtomicInteger totalAttacks;
     private long HanSoloFinish;
     private long C3POFinish;
     private long R2D2Deactivate;
@@ -21,32 +32,25 @@ public class Diary {
     private long R2D2Terminate;
     private long LandoTerminate;
 
-    //Singleton reference
-    private  static Diary instance=null;
-
 
     /**
      * Init numberOfAttacks to zero
      */
     private Diary() {
         totalAttacks =new AtomicInteger(0);
-        HanSoloFinish=System.currentTimeMillis();
-        C3POFinish=System.currentTimeMillis();
-        R2D2Deactivate=System.currentTimeMillis();
-        LeiaTerminate=System.currentTimeMillis();
-        HanSoloTerminate=System.currentTimeMillis();
-        C3POTerminate=System.currentTimeMillis();
-        R2D2Terminate=System.currentTimeMillis();
-        LandoTerminate=System.currentTimeMillis();
+        HanSoloFinish=0;
+        C3POFinish=0;
+        R2D2Deactivate=0;
+        LeiaTerminate=0;
+        HanSoloTerminate=0;
+        C3POTerminate=0;
+        R2D2Terminate=0;
+        LandoTerminate=0;
 
     }
 
     public static Diary getInstance(){
-        if(instance==null)
-        {
-            instance=new Diary();
-        }
-        return instance;
+       return SingletonDiaryHolder.instance;
     }
 
     /**
@@ -59,26 +63,10 @@ public class Diary {
 
     /**
      *
-     * @return LeiaTerminate
-     */
-    public long getLeiaTerminate() {
-        return LeiaTerminate;
-    }
-
-    /**
-     *
      * set LeiaTerminate
      */
     public void setLeiaTerminate() {
-        LeiaTerminate = System.currentTimeMillis()- LeiaTerminate;
-    }
-
-    /**
-     *
-     * @return LandoTerminate
-     */
-    public long getLandoTerminate() {
-        return LandoTerminate;
+        LeiaTerminate = System.currentTimeMillis()- Main.getStartTime();
     }
 
     /**
@@ -86,15 +74,7 @@ public class Diary {
      * set LandoTerminate
      */
     public void setLandoTerminate() {
-        LandoTerminate =System.currentTimeMillis()- LandoTerminate;
-    }
-
-    /**
-     *
-     * @return R2D2Terminate
-     */
-    public long getR2D2Terminate() {
-        return R2D2Terminate;
+        LandoTerminate =System.currentTimeMillis()- Main.getStartTime();
     }
 
     /**
@@ -102,32 +82,18 @@ public class Diary {
      * set R2D2Terminate
      */
     public void setR2D2Terminate() {
-        R2D2Terminate = System.currentTimeMillis()-R2D2Terminate;
+        R2D2Terminate = System.currentTimeMillis()-Main.getStartTime();
     }
 
-    /**
-     *
-     * @return C3POTerminate
-     */
-    public long getC3POTerminate() {
-        return C3POTerminate;
-    }
 
     /**
      *
      * set C3POTerminate
      */
     public void setC3POTerminate() {
-        C3POTerminate = System.currentTimeMillis()-C3POTerminate;
+        C3POTerminate = System.currentTimeMillis()-Main.getStartTime();
     }
 
-    /**
-     *
-     * @return HanSoloTerminate
-     */
-    public long getHanSoloTerminate() {
-        return HanSoloTerminate;
-    }
 
 
     /**
@@ -136,31 +102,16 @@ public class Diary {
      */
     public void setHanSoloTerminate() {
 
-        HanSoloTerminate =System.currentTimeMillis()- HanSoloTerminate;
+        HanSoloTerminate =System.currentTimeMillis()- Main.getStartTime();
     }
 
-    /**
-     *
-     * @return R2D2Deactivate
-     */
-    public long getR2D2Deactivate() {
-        return R2D2Deactivate;
-    }
 
     /**
      *
      * set R2D2Deactivate
      */
     public void setR2D2Deactivate() {
-        R2D2Deactivate =System.currentTimeMillis() - R2D2Deactivate;
-    }
-
-    /**
-     *
-     * @return C3POFinish
-     */
-    public long getC3POFinish() {
-        return C3POFinish;
+        R2D2Deactivate =System.currentTimeMillis() - Main.getStartTime();
     }
 
     /**
@@ -168,15 +119,7 @@ public class Diary {
      * set C3POFinish
      */
     public void setC3POFinish() {
-        C3POFinish =System.currentTimeMillis() - C3POFinish;
-    }
-
-    /**
-     *
-     * @return HanSoloFinish
-     */
-    public long getHanSoloFinish() {
-        return HanSoloFinish;
+        C3POFinish =System.currentTimeMillis() - Main.getStartTime();
     }
 
     /**
@@ -184,12 +127,42 @@ public class Diary {
      * set HanSoloFinish
      */
     public void setHanSoloFinish() {
-        HanSoloFinish = System.currentTimeMillis()-HanSoloFinish;
+        HanSoloFinish = System.currentTimeMillis()-Main.getStartTime();
+    }
+
+    public long getHanSoloFinish() {
+        return HanSoloFinish;
+    }
+
+    public long getC3POFinish() {
+        return C3POFinish;
+    }
+
+    public long getR2D2Deactivate() {
+        return R2D2Deactivate;
+    }
+
+    public long getLeiaTerminate() {
+        return LeiaTerminate;
+    }
+
+    public long getHanSoloTerminate() {
+        return HanSoloTerminate;
+    }
+
+    public long getC3POTerminate() {
+        return C3POTerminate;
+    }
+
+    public long getR2D2Terminate() {
+        return R2D2Terminate;
+    }
+
+    public long getLandoTerminate() {
+        return LandoTerminate;
     }
 
     public AtomicInteger getNumberOfAttacks() {
         return totalAttacks;
     }
-
-
 }

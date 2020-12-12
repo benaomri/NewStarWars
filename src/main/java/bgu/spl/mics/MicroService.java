@@ -1,9 +1,8 @@
 package bgu.spl.mics;
 
 
-import javax.security.auth.callback.CallbackHandler;
+import bgu.spl.mics.application.Main;
 import java.util.HashMap;
-import java.util.Map;
 
 /**
  * The MicroService is an abstract class that any micro-service in the system
@@ -19,13 +18,13 @@ import java.util.Map;
  * message-queue (see {@link MessageBus#register(bgu.spl.mics.MicroService)}
  * method). The abstract MicroService stores this callback together with the
  * type of the message is related to.
- * 
+ *
  * Only private fields and methods may be added to this class.
  * <p>
  */
 public abstract class MicroService  implements Runnable {
     private final String name;
-    private HashMap<Class,Callback> callbackMap;
+    private final HashMap<Class,Callback> callbackMap;
 
 
     /**
@@ -85,6 +84,8 @@ public abstract class MicroService  implements Runnable {
      *                 queue.
      */
     protected final <B extends Broadcast> void subscribeBroadcast(Class<B> type, Callback<B> callback) {
+        if(!callbackMap.containsKey(type)) // We make sure we don't have it already
+            callbackMap.put(type,callback); //Add the specific CallBack to the type
         MessageBusImpl.getInstance().subscribeBroadcast(type,this); //Add to Broadcast
 
     }
@@ -102,7 +103,7 @@ public abstract class MicroService  implements Runnable {
      * 	       			null in case no micro-service has subscribed to {@code e.getClass()}.
      */
     protected final <T> Future<T> sendEvent(Event<T> e) {
-       return MessageBusImpl.getInstance().sendEvent(e);
+        return MessageBusImpl.getInstance().sendEvent(e);
     }
 
     /**
@@ -128,7 +129,6 @@ public abstract class MicroService  implements Runnable {
      */
     protected final <T> void complete(Event<T> e, T result) {
         MessageBusImpl.getInstance().complete(e,result);
-
     }
 
     /**
@@ -143,8 +143,8 @@ public abstract class MicroService  implements Runnable {
     protected final void terminate() {
         MessageBusImpl.getInstance().unregister(this);
         close();
+        Main.CDL_Gson.countDown();
         Thread.currentThread().interrupt();
-
     }
 
     /**
@@ -156,36 +156,33 @@ public abstract class MicroService  implements Runnable {
     }
 
     /**
-     * The entry point of the micro-service. TODO: you must complete this code
+     * The entry point of the micro-service.
      * otherwise you will end up in an infinite loop.
      */
     @Override
     public final void run() {
-        Future futureToget;
-        initialize();//each init call suscribe event/broadcast
+        initialize();//each init call subscribe event/broadcast
 
-        //We wiil Interpt the Theread in the Terminate Function when we will get the TerminateBroadCast
-        while(!Thread.currentThread().isInterrupted()){
+        //We will Interrupted the Thread in the Terminate Function when we will get the TerminateBroadCast
+        while (!Thread.currentThread().isInterrupted()) {
             //Try to Get Message
             try {
                 Message msgFromQ = MessageBusImpl.getInstance().awaitMessage(this);
-                System.out.println(this.name+" is Handling msg- "+ msgFromQ.getClass());
                 callbackMap.get(msgFromQ.getClass()).call(msgFromQ);
-                System.out.println(this.name+" Finished Handling msg- "+ msgFromQ.getClass());
+
+            } catch (InterruptedException e) {
+                e.printStackTrace();
             }
-            catch (InterruptedException e) {
-                Thread.interrupted();
-               // e.printStackTrace();
-            }
+
         }
 
-
     }
-
     /**
      * The function that close the microservice
      */
+
     protected abstract void close();
+
 
 
 }

@@ -14,67 +14,85 @@ import java.util.concurrent.CountDownLatch;
  * In the end, you should output a JSON.
  */
 public class Main {
-	private static Ewoks ewoks;
+
+	private  static long StartTime;
 	private static Thread leia,hanSolo,c3po,lando,r2d2;
 	public static CountDownLatch CDL;
+	public static CountDownLatch CDL_Gson;
 
 
-	public static void main(String[] args) throws IOException, InterruptedException {
-		CDL=new CountDownLatch(4);
-		Init("/home/spl211/IdeaProjects/StarWars/src/main/input.json");
-		class toRun implements Runnable{
-			public toRun(){}
-			public void run(){
-				Simulate();
-				}
+	public static void main(String[] args)  {
+		CDL = new CountDownLatch(4);
+		CDL_Gson = new CountDownLatch(4);
+		Init("input.json");
+		Simulate();
+		while (CDL_Gson.getCount() > 0) {
+			try {
+				CDL_Gson.await();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
-		Thread Run=new Thread(new toRun());
-		Run.start();
-		Run.join();
-		outGson();
-
+		}
+		outGson("Output.json");
+		Ewoks.getInstance().setInstance();
 
 	}
 
-
-	public static void Init(String path) throws IOException {
-		InputApp input= JsonInputReader.getInputFromJson(path);
-		LeiaMicroservice l=new LeiaMicroservice(input.getAttacks());
+	/**
+	 * Functions that Initialize all threads
+	 * @param path - the path we read the file from
+	 */
+	public static void Init(String path) {
+		InputApp input = new InputApp();
+		try {
+			input = JsonInputReader.getInputFromJson(path);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		leia=new Thread(new LeiaMicroservice(input.getAttacks()));
 		hanSolo=new Thread(new HanSoloMicroservice());
 		c3po=new Thread(new C3POMicroservice());
 		lando=new Thread(new LandoMicroservice(input.getLando()));
 		r2d2=new Thread(new R2D2Microservice(input.getR2D2()));
-		ewoks=Ewoks.getInstance(input.getEwoks());
+		Ewoks.getInstance(input.getEwoks());
+		StartTime=System.currentTimeMillis();
 	}
 
-
-
+	/**
+	 * The simulate function
+	 * Run all the Threads
+	 */
 	public static void Simulate() {
-
-
 		hanSolo.start();
 		c3po.start();
 		lando.start();
 		r2d2.start();
 		leia.start();
-
-
-
-
 	}
 
-	public static void outGson() {
 
+	/**
+	 * Create the output.json file
+	 * @param Path - the path for output file
+	 */
+	public static void outGson(String Path) {
 		try {
 			Gson outGson=new Gson();
 			Diary diary=Diary.getInstance();
-			Writer writer=new FileWriter("/home/spl211/IdeaProjects/StarWars/src/main/output.json");
+			Writer writer=new FileWriter(Path);
 			outGson.toJson(diary,writer);
 			writer.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
+	}
+
+	/**
+	 * Getter for StartTime
+	 * @return the start time of the run
+	 */
+	public static long getStartTime(){
+		return StartTime;
 	}
 }

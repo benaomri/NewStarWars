@@ -1,14 +1,15 @@
 package bgu.spl.mics.application.messages;
 
 import bgu.spl.mics.Broadcast;
+import bgu.spl.mics.Event;
 
 public class LeiaMFinishAtt implements Broadcast {
-    int serial;
-    public  LeiaMFinishAtt(int serial){
-        this.serial=serial;
+    Event<Boolean> e;
+    public  LeiaMFinishAtt(Event<Boolean> e){
+        this.e=e;
     }
 
-    public int getSerial() {
-        return serial;
+    public Event<Boolean> getEvent() {
+        return e;
     }
 }

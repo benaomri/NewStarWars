@@ -7,10 +7,12 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="NewStarWars" />
+        <module name="spl211" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="NewStarWars" target="1.8" />
+      <module name="spl211" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

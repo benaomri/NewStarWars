@@ -4,11 +4,14 @@ import bgu.spl.mics.*;
 import bgu.spl.mics.application.Main;
 
 import bgu.spl.mics.application.messages.AttackEvent;
+import bgu.spl.mics.application.messages.LeiaMFinishAtt;
 import bgu.spl.mics.application.messages.TerminateBroadCast;
 import bgu.spl.mics.application.passiveObjects.Diary;
+import bgu.spl.mics.application.passiveObjects.Ewok;
 import bgu.spl.mics.application.passiveObjects.Ewoks;
 
-import java.util.Map;
+import java.util.List;
+import java.util.Vector;
 
 /**
  * HanSoloMicroservices is in charge of the handling {@link AttackEvent}.
@@ -28,8 +31,7 @@ public class HanSoloMicroservice extends MicroService {
     @Override
     protected void initialize() {
         MessageBusImpl.getInstance().register(this);
-        System.out.println(AttackEvent.class);
-        subscribeEvent(AttackEvent.class, AttackEvent::att);
+        subscribeEvent(AttackEvent.class, this::HanAtt) ;
         subscribeBroadcast(TerminateBroadCast.class,c -> terminate());
         Main.CDL.countDown();
 
@@ -39,4 +41,34 @@ public class HanSoloMicroservice extends MicroService {
     {
         Diary.getInstance().setHanSoloTerminate();
     }
+
+    private  void HanAtt(AttackEvent a){
+        Vector<Ewok> EwokList=Ewoks.getInstance().getEwokList();
+        List<Integer> serials=a.getSerials();
+        long duration=a.getDuration();
+
+        //Acquire
+        for (Integer value : serials) {
+            int serial = value - 1;
+            EwokList.get(serial).acquire();
+        }
+        try {
+            Thread.sleep(duration);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        //Release
+        for (Integer integer : serials) {
+            int serial = integer - 1;
+            EwokList.get(serial).release();
+        }
+        MessageBusImpl.getInstance().sendBroadcast(new LeiaMFinishAtt(a));
+        Diary.getInstance().setHanSoloFinish();
+        Diary.getInstance().incAtt();
+    }
+
+
+
+
 }
