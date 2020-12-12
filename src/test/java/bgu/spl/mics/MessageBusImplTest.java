@@ -99,6 +99,7 @@ class MessageBusImplTest {
     @Test
     void awaitMessage() {
         AttackEvent Att=new AttackEvent(); //Creating Att
+        messageBusToCheck.register(testHanMS);
         messageBusToCheck.subscribeEvent(Att.getClass(),testHanMS);
         messageBusToCheck.sendEvent(Att);
         //Checking the first scenario
@@ -111,8 +112,9 @@ class MessageBusImplTest {
         //Checking the second scenario
         AttackEvent Att1=new AttackEvent();
         try {
-            Message msg=messageBusToCheck.awaitMessage(testHanMS);
             messageBusToCheck.sendEvent(Att1);
+            Message msg=messageBusToCheck.awaitMessage(testHanMS);
+
             assertEquals(msg,Att1,"Check if the result we get is the same as we set");
         } catch (InterruptedException e) {
             fail("We caught a Exception and that means failure"); //if caught exception then fail

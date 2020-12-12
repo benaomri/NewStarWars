@@ -79,10 +79,10 @@ class FutureTest {
     void Get() {
         String str = "Result";
         assertFalse(futureToTest.isDone(),"Check if isDone is False ");
-//        futureToTest.get(300,TimeUnit.MILLISECONDS);
+        assertNull( futureToTest.get(10,TimeUnit.MILLISECONDS));
         assertFalse(futureToTest.isDone(),"Check if isDone is False after try to get in the first time");
         futureToTest.resolve(str);
         assertEquals(futureToTest.get(),str,"Check if the result we get Equal to the result we Send");
-        assertEquals(futureToTest.get(100,TimeUnit.MILLISECONDS),str);
+        assertEquals(futureToTest.get(10,TimeUnit.MILLISECONDS),str);
     }
 }

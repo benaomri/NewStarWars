@@ -34,8 +34,8 @@ public class MessageBusImpl<microServiceVector> implements MessageBus {
 	 */
 	private MessageBusImpl()
 	{
-		msgBusMS = new ConcurrentHashMap<>(); //We had to this when MS is register
-		msgBusEV = new ConcurrentHashMap<>(); //We had to this when MS is subscribe it
+		msgBusMS = new ConcurrentHashMap<>(); //We add to this when MS is register
+		msgBusEV = new ConcurrentHashMap<>(); //We add to this when MS is subscribe it
 		msgBusFuture = new ConcurrentHashMap<>();
 		msgBusB=new ConcurrentHashMap<>();
 	}
