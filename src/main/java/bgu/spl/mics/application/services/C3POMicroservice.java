@@ -48,7 +48,6 @@ public class C3POMicroservice extends MicroService {
         Vector<Ewok> EwokList= Ewoks.getInstance().getEwokList();
         List<Integer> serials=a.getSerials();
         long duration=a.getDuration();
-
         //Acquire
         for (Integer integer : serials) {
             int serial = integer - 1;

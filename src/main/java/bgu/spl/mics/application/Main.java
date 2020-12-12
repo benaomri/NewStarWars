@@ -22,21 +22,20 @@ public class Main {
 
 
 	public static void main(String[] args)  {
-		for (int i=0;i<100;i++) {
-			CDL = new CountDownLatch(4);
-			CDL_Gson = new CountDownLatch(4);
-			Init("/home/spl211/IdeaProjects/NewStarWars/src/main/input.json");
-			Simulate();
-			while (CDL_Gson.getCount() > 0) {
-				try {
-					CDL_Gson.await();
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+		CDL = new CountDownLatch(4);
+		CDL_Gson = new CountDownLatch(4);
+		Init("input.json");
+		Simulate();
+		while (CDL_Gson.getCount() > 0) {
+			try {
+				CDL_Gson.await();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
 			}
-			outGson("/home/spl211/IdeaProjects/NewStarWars/src/main/output.json");
-			System.out.println("finished: "+i);
 		}
+		outGson("Output.json");
+		Ewoks.getInstance().setInstance();
+
 	}
 
 	/**

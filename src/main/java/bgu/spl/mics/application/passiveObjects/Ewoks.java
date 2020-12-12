@@ -50,6 +50,10 @@ public class Ewoks {
         return EwokList;
     }
 
+    public static void setInstance()
+    {
+        instance=null;
+    }
 
 }
 

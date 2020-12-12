@@ -12,6 +12,12 @@ import java.util.concurrent.atomic.AtomicInteger;
  * Do not add to this class nothing but a single constructor, getters and setters.
  */
 public class Diary {
+
+
+    public void resetNumberAttacks() {
+        totalAttacks.set(0);
+    }
+
     private static class SingletonDiaryHolder {
         private static final Diary instance=new Diary();
     }
@@ -124,5 +130,39 @@ public class Diary {
         HanSoloFinish = System.currentTimeMillis()-Main.getStartTime();
     }
 
+    public long getHanSoloFinish() {
+        return HanSoloFinish;
+    }
 
+    public long getC3POFinish() {
+        return C3POFinish;
+    }
+
+    public long getR2D2Deactivate() {
+        return R2D2Deactivate;
+    }
+
+    public long getLeiaTerminate() {
+        return LeiaTerminate;
+    }
+
+    public long getHanSoloTerminate() {
+        return HanSoloTerminate;
+    }
+
+    public long getC3POTerminate() {
+        return C3POTerminate;
+    }
+
+    public long getR2D2Terminate() {
+        return R2D2Terminate;
+    }
+
+    public long getLandoTerminate() {
+        return LandoTerminate;
+    }
+
+    public AtomicInteger getNumberOfAttacks() {
+        return totalAttacks;
+    }
 }

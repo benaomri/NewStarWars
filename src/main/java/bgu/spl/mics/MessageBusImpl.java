@@ -1,5 +1,4 @@
 package bgu.spl.mics;
-
 import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReadWriteLock;
@@ -27,7 +26,7 @@ public class MessageBusImpl<microServiceVector> implements MessageBus {
 	private final  ConcurrentHashMap<Integer, Vector<Message>> msgBusMS;
 	private final ConcurrentHashMap<Class<? extends Event>, Vector<Integer>> msgBusEV;
 	private final ConcurrentHashMap<Class<? extends Broadcast>, Vector<Integer>> msgBusB;
-	private final ConcurrentHashMap<Integer, Future<Boolean>> msgBusFuture;
+	private final ConcurrentHashMap<Integer, Future> msgBusFuture;
 
 
 	/**
@@ -74,7 +73,7 @@ public class MessageBusImpl<microServiceVector> implements MessageBus {
 
 	@Override @SuppressWarnings("unchecked")
 	public <T> void complete(Event<T> e, T result) {
-		msgBusFuture.get(e.hashCode()).resolve((Boolean) result);
+		msgBusFuture.get(e.hashCode()).resolve(result);
 
 	}
 
@@ -97,14 +96,20 @@ public class MessageBusImpl<microServiceVector> implements MessageBus {
 	 */
 	@Override
 	public synchronized <T> Future sendEvent(Event<T> e) {
-		Vector<Integer> toRoundRobin= msgBusEV.get(e.getClass());//
-		Integer chosenMicro= round_robin(e,toRoundRobin);//send to round robin all microservice that subscribe to this event
-		msgBusMS.get(chosenMicro).add(e);
-		msgBusFuture.put(e.hashCode(),new Future());
-		notifyAll();
-        return msgBusFuture.get(e.hashCode());
-	}
 
+		Vector<Integer> toRoundRobin = msgBusEV.get(e.getClass());
+		if(toRoundRobin!=null&&!toRoundRobin.isEmpty())
+		 {
+			Integer chosenMicro = round_robin(e, toRoundRobin);//send to round robin all microservice that subscribe to this event
+			msgBusMS.get(chosenMicro).add(e);
+			msgBusFuture.put(e.hashCode(), new Future());
+			notifyAll();
+			return msgBusFuture.get(e.hashCode());
+
+		}
+		else
+			return null;
+	}
 	@Override
 	public  void register(MicroService m) {
 		thisLock.writeLock().lock();
