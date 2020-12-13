@@ -1,8 +1,7 @@
 package bgu.spl.mics.application.passiveObjects;
 
 
-import java.util.Comparator;
-import java.util.List;
+
 import java.util.Vector;
 
 /**
@@ -15,9 +14,8 @@ import java.util.Vector;
  */
 public class Ewoks {
     //Fields
-    private Vector<Ewok> EwokList;
+    private final Vector<Ewok> EwokList;
     private  static Ewoks instance=null;
-
 
     /**
      * Constructor
@@ -52,9 +50,10 @@ public class Ewoks {
         return EwokList;
     }
 
-    public void PrintEwoks()
+    public static void setInstance()
     {
-        System.out.println(EwokList);
+        instance=null;
     }
+
 }
 

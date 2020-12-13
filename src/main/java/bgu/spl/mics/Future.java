@@ -13,7 +13,7 @@ import java.util.concurrent.TimeUnit;
 public class Future<T> {
 	private boolean isDone;
     private T result;
-	
+
 	/**
 	 * This should be the the only public constructor in this class.
 	 */
@@ -37,7 +37,7 @@ public class Future<T> {
 			try {
 				wait();
 			} catch (InterruptedException e) {
-
+				e.printStackTrace();
 			}
 		}
         return result;
@@ -74,8 +74,8 @@ public class Future<T> {
      *         elapsed, return null.
      */
 	public T get(long timeout, TimeUnit unit) {
-		timeout=unit.toMillis(timeout)+System.currentTimeMillis();//calculate time out with computer time
-		while(timeout-System.currentTimeMillis()>0){
+		timeout=unit.toMillis(timeout)+System.currentTimeMillis();//calculate time out with computer times
+		while(System.currentTimeMillis()-timeout>0){
 			if (get()!=null){
 				return get();
 			}

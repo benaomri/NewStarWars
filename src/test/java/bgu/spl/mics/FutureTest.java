@@ -32,7 +32,7 @@ class FutureTest {
     void Future()
     {
         assertFalse(futureToTest.isDone(),"Check if Future isDone init  to False");
-        assertNull(futureToTest.get(),"Check if Future Result is init to Null");
+        assertNull(futureToTest.get(10,TimeUnit.MILLISECONDS),"Check if Future Result is init to Null");
     }
 
 

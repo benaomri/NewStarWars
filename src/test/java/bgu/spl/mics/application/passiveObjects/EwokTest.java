@@ -25,24 +25,25 @@ class EwokTest {
     }
 
     /**
-     * @PRE: available=false
-     * @POST: available=true
-     */
-    @Test
-    void acquire() {
-        assertFalse(EwokToTest.available,"Check if acquire changed to False");
-        EwokToTest.acquire();
-//        assertTrue(EwokToTest.available,"Check if acquire changed to True");
-    }
-
-    /**
      * @PRE: available=true
      * @POST: available=false
      */
     @Test
+    void acquire() {
+        assertTrue(EwokToTest.available,"Check if acquire changed to False");
+        EwokToTest.acquire();
+        assertFalse(EwokToTest.available,"Check if acquire changed to True");
+    }
+
+    /**
+     * @PRE: available=false
+     * @POST: available=true
+     */
+    @Test
     void release() {
-        assertTrue(EwokToTest.available,"Check if release changed to True");
+        EwokToTest.available=false;
+        assertFalse(EwokToTest.available,"Check if release changed to True");
         EwokToTest.release();
-        assertFalse(EwokToTest.available,"Check if release changed to False");
+        assertTrue(EwokToTest.available,"Check if release changed to False");
     }
 }
