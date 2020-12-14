@@ -96,7 +96,6 @@ public class MessageBusImpl<microServiceVector> implements MessageBus {
 	 */
 	@Override
 	public synchronized <T> Future sendEvent(Event<T> e) {
-
 		Vector<Integer> toRoundRobin = msgBusEV.get(e.getClass());
 		if(toRoundRobin!=null&&!toRoundRobin.isEmpty())
 		 {
@@ -147,7 +146,6 @@ public class MessageBusImpl<microServiceVector> implements MessageBus {
 	public synchronized Message awaitMessage(MicroService m) throws InterruptedException {
 		if(!checkIfRegister(m))
 			throw new IllegalStateException(m.getName()+" is not register");
-
 		while(msgBusMS.get(m.hashCode()).isEmpty()){//wait until is massage to take
 			wait();
 		}

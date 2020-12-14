@@ -24,6 +24,11 @@ class EwokTest {
     void tearDown() {
     }
 
+
+    /**
+     * Switched between the tests because of misUnderstood the aqcuire and relaease
+     * ( just changet between asserted true to false)
+     */
     /**
      * @PRE: available=true
      * @POST: available=false
@@ -41,7 +46,7 @@ class EwokTest {
      */
     @Test
     void release() {
-        EwokToTest.available=false;
+        EwokToTest.available=false; //Add this for making unavailbale
         assertFalse(EwokToTest.available,"Check if release changed to True");
         EwokToTest.release();
         assertTrue(EwokToTest.available,"Check if release changed to False");

@@ -76,10 +76,12 @@ public class Future<T> {
 	public T get(long timeout, TimeUnit unit) {
 		timeout=unit.toMillis(timeout)+System.currentTimeMillis();//calculate time out with computer times
 		while(System.currentTimeMillis()-timeout>0){
-			if (get()!=null){
-				return get();
+			if (isDone()){
+				break;
 			}
 		}
+		if (isDone())
+			return get();
         return null;
 	}
 }

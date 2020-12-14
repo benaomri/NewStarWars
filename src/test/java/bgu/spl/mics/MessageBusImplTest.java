@@ -14,15 +14,15 @@ class MessageBusImplTest {
      * Creating variables we use in all the tests
      * Before each test it will be initial
      */
-    MessageBus messageBusToCheck;
-    MicroService testHanMS;
-    MicroService testC3MS;
+    MessageBusImpl messageBusToCheck;
+    MicroService testMS1,testMS2;
+
 
     @BeforeEach
     void setUp() {
         messageBusToCheck=MessageBusImpl.getInstance();
-        testHanMS=new HanSoloMicroservice();
-        testC3MS=new C3POMicroservice();
+        testMS1= new MicroServiceTest();
+        testMS2= new MicroServiceTest();
     }
     //No need to tear down
     @AfterEach
@@ -45,13 +45,17 @@ class MessageBusImplTest {
 
     /**
      * Testing if after finished event we get the same result
+     *
+     * Change: We didn't subscribe before for Event
      */
     @Test
     void complete() {
-        Event Att=new AttackEvent();
-        Future<String> mission=messageBusToCheck.sendEvent(Att);
+        TestEvent event= new TestEvent();
+        messageBusToCheck.register(testMS1);
+        messageBusToCheck.subscribeEvent(event.getClass(),testMS1);
+        Future<String> mission=messageBusToCheck.sendEvent(event);
         String result="Finished";
-        messageBusToCheck.complete(Att,result); //Do complete and setting result
+        messageBusToCheck.complete(event,result); //Do complete and setting result
         assertEquals(result,mission.get(),"Check if the result we get is the same as we set"); //Checking if equal
     }
 
@@ -60,13 +64,13 @@ class MessageBusImplTest {
      */
     @Test
     void sendBroadcast() {
-        messageBusToCheck.register(testHanMS);
-        messageBusToCheck.subscribeBroadcast(Broadcast.class,testHanMS);
-        Broadcast broad=new Broadcast() {};
-        testHanMS.sendBroadcast(broad); //Send the broadcast
+        messageBusToCheck.register(testMS1);
+        TestB broad= new TestB();
+        messageBusToCheck.subscribeBroadcast(broad.getClass(),testMS1);
+        testMS1.sendBroadcast(broad); //Send the broadcast
         //We use try catch to get the exception from the method that throws it
         try {
-            assertEquals(messageBusToCheck.awaitMessage(testHanMS),broad,"Check if the result we get is the same as we set");
+            assertEquals(messageBusToCheck.awaitMessage(testMS1),broad,"Check if the result we get is the same as we set");
         } catch (InterruptedException e) {
             fail("We caught a Exception and that means failure"); //if caught exception then fail
         }
@@ -77,14 +81,14 @@ class MessageBusImplTest {
      */
     @Test
     void sendEvent() {
-        messageBusToCheck.register(testHanMS);
+        messageBusToCheck.register(testMS1);
         AttackEvent Att=new AttackEvent();
-        messageBusToCheck.subscribeEvent(Att.getClass(),testHanMS);
+        messageBusToCheck.subscribeEvent(Att.getClass(),testMS1);
         messageBusToCheck.sendEvent(Att);
-        testC3MS.sendEvent(Att);
+        testMS2.sendEvent(Att);
         //We use try catch to get the exception from the method that throws it
         try {
-            assertEquals(messageBusToCheck.awaitMessage(testHanMS),Att,"Check if the result we get is the same as we set");
+            assertEquals(messageBusToCheck.awaitMessage(testMS1),Att,"Check if the result we get is the same as we set");
         } catch (InterruptedException e) {
             fail(); //if caught exception then fail
         }
@@ -98,25 +102,18 @@ class MessageBusImplTest {
      */
     @Test
     void awaitMessage() {
-        AttackEvent Att=new AttackEvent(); //Creating Att
-        messageBusToCheck.subscribeEvent(Att.getClass(),testHanMS);
-        messageBusToCheck.sendEvent(Att);
+        TestEvent event= new TestEvent(); //Creating Att
+        messageBusToCheck.register(testMS1);
+        messageBusToCheck.subscribeEvent(event.getClass(),testMS1);
+        messageBusToCheck.sendEvent(event);
         //Checking the first scenario
         try {
-            assertEquals(messageBusToCheck.awaitMessage(testHanMS),Att,"Check if the result we get is the same as we set");
+            assertEquals(messageBusToCheck.awaitMessage(testMS1),event,"Check if the result we get is the same as we set");
 
         } catch (InterruptedException e) {
             fail("We caught a Exception and that means failure"); //if caught exception then fail
         }
-        //Checking the second scenario
-        AttackEvent Att1=new AttackEvent();
-        try {
-            Message msg=messageBusToCheck.awaitMessage(testHanMS);
-            messageBusToCheck.sendEvent(Att1);
-            assertEquals(msg,Att1,"Check if the result we get is the same as we set");
-        } catch (InterruptedException e) {
-            fail("We caught a Exception and that means failure"); //if caught exception then fail
-        }
+
 
     }
 
@@ -135,6 +132,34 @@ class MessageBusImplTest {
     void unregister() {
     }
 
+    /**
+     * We created new Class for Tests
+     */
+    //Tests Class
+    public static class TestB implements Broadcast {
+        public TestB(){
 
+        }
+    }
+    public static class TestEvent implements Event<Boolean>{
+        public TestEvent(){
 
+        }
+    }
+    public static class MicroServiceTest extends MicroService {
+
+        public MicroServiceTest() {
+            super("Test");
+        }
+
+        @Override
+        protected void initialize() {
+
+        }
+
+        @Override
+        protected void close() {
+
+        }
+    }
 }
