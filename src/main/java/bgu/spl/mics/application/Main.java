@@ -23,7 +23,7 @@ public class Main {
 	public static void main(String[] args)  {
 		CDL = new CountDownLatch(4);
 		CDL_Gson = new CountDownLatch(4);
-		Init("input.json");
+		Init(args[0]);
 		Simulate();
 		while (CDL_Gson.getCount() > 0) {
 			try {
@@ -32,7 +32,7 @@ public class Main {
 				e.printStackTrace();
 			}
 		}
-		outGson("Output.json");
+		outGson(args[1]);
 		Ewoks.setInstance();
 
 	}

@@ -146,7 +146,6 @@ public class MessageBusImpl<microServiceVector> implements MessageBus {
 
 	@Override
 	public synchronized Message awaitMessage(MicroService m) throws InterruptedException {
-		System.out.println(msgBusMS);
 		if(!checkIfRegister(m))
 			throw new IllegalStateException(m.getName()+" is not register");
 
