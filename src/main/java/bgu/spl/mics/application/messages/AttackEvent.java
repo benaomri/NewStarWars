@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Vector;
 
 /**
- * AttEvent class implement Event ,
+ * AttEvent class implement Event
  */
 public class AttackEvent implements Event<Boolean> {
     long duration;

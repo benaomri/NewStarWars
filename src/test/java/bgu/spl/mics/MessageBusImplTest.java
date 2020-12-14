@@ -13,6 +13,10 @@ class MessageBusImplTest {
     /**
      * Creating variables we use in all the tests
      * Before each test it will be initial
+     *
+     * We changed few things:
+     *  1. Creating class for only tests: MicroServiceTest,TestEvent,TestB
+     *  
      */
     MessageBusImpl messageBusToCheck;
     MicroService testMS1,testMS2;

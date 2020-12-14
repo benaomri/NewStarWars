@@ -32,12 +32,19 @@ public class R2D2Microservice extends MicroService {
         Main.CDL.countDown();
 
     }
+
+    /**
+     * Close function
+     */
     @Override
     protected void close()
     {
         Diary.getInstance().setR2D2Terminate();
     }
 
+    /**
+     * The deactive callBack
+     */
     private void Deactivate()
     {
         try {

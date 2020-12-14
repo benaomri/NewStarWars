@@ -60,6 +60,10 @@ public class LeiaMicroservice extends MicroService {
 
 
     }
+
+    /**
+     *     The send Attacks function
+     */
     private void sendAttEvent(){
         int i=0;
         for(Attack att:attacks){
@@ -69,13 +73,19 @@ public class LeiaMicroservice extends MicroService {
     }
 
 
-
+    /**
+     * Close function
+     */
     @Override
     protected void close()
     {
         Diary.getInstance().setLeiaTerminate();
     }
 
+    /**
+     * Function that resolve an Event
+     * @param e - the event we want to resolve
+     */
     public void changeComplete(Event<Boolean> e){
         complete(e,true);
         if(isComplete())
@@ -83,6 +93,11 @@ public class LeiaMicroservice extends MicroService {
             MessageBusImpl.getInstance().sendEvent(new DeactivationEvent());
         }
     }
+
+    /**
+     * Check if all the futrues resolved
+     * @return if all resolved
+     */
     public boolean isComplete(){
         for (Future future : futures) {
             if (!future.isDone())

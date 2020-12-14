@@ -33,6 +33,7 @@ public class Main {
 			}
 		}
 		outGson(args[1]);
+		//For tests
 		Ewoks.setInstance();
 
 	}

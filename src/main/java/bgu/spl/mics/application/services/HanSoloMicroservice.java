@@ -41,12 +41,21 @@ public class HanSoloMicroservice extends MicroService {
         Main.CDL.countDown();// count down for init Leia
 
     }
+
+    /**
+     * Close Method
+     */
     @Override
     protected void close()
     {
         Diary.getInstance().setHanSoloTerminate();
     }//write the terminate time in the dairy
 
+
+    /**
+     * Han Solo Attack
+     * @param a - the event He att
+     */
     private  void HanAtt(AttackEvent a){//Attacking
         Vector<Ewok> EwokList=Ewoks.getInstance().getEwokList();//All Ewoks
         List<Integer> serials=a.getSerials();// Ewoks for Att

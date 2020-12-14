@@ -33,13 +33,19 @@ public class LandoMicroservice  extends MicroService {
         Main.CDL.countDown();// count down for init Leia
 
     }
+
+    /**
+     * Close method
+     */
     @Override
     protected void close()
     {
         Diary.getInstance().setLandoTerminate();
     }//write the terminate time in the dairy
 
-
+    /**
+     * Bomb call back of Lando
+     */
     public void Bomb()
     {
         try {
@@ -47,7 +53,6 @@ public class LandoMicroservice  extends MicroService {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-//finish bombing
-        MessageBusImpl.getInstance().sendBroadcast(new TerminateBroadCast());//seng terminate broad cast
+        MessageBusImpl.getInstance().sendBroadcast(new TerminateBroadCast());//send terminate broad cast
     }
 }

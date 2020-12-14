@@ -44,12 +44,21 @@ public class C3POMicroservice extends MicroService {
 
 
     }
+
+    /**
+     * Close Method
+     */
     @Override
     protected void close()//write the terminate time in the dairy
     {
         Diary.getInstance().setC3POTerminate();
     }
 
+
+    /**
+     * The Attack call back of C3PO
+     * @param a - Event
+     */
     private  void C3POAtt(AttackEvent a){//Attacking
         Vector<Ewok> EwokList= Ewoks.getInstance().getEwokList();//All Ewoks
         List<Integer> serials=a.getSerials();// Ewoks for Att

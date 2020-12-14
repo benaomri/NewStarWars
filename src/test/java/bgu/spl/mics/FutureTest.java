@@ -15,6 +15,11 @@ import static org.junit.jupiter.api.Assertions.*;
 class FutureTest {
     private  Future<String> futureToTest;
 
+    /**
+     * We changed a few things-
+     *  1. in public T get(long timeout, TimeUnit unit) we changed that only check one time
+     */
+
     @BeforeEach
     void setUp() {
         futureToTest=new Future<String>();
