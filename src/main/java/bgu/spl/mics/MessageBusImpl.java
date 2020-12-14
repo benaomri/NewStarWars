@@ -34,8 +34,8 @@ public class MessageBusImpl<microServiceVector> implements MessageBus {
 	 */
 	private MessageBusImpl()
 	{
-		msgBusMS = new ConcurrentHashMap<>(); //We had to this when MS is register
-		msgBusEV = new ConcurrentHashMap<>(); //We had to this when MS is subscribe it
+		msgBusMS = new ConcurrentHashMap<>(); //We add to this when MS is register
+		msgBusEV = new ConcurrentHashMap<>(); //We add to this when MS is subscribe it
 		msgBusFuture = new ConcurrentHashMap<>();
 		msgBusB=new ConcurrentHashMap<>();
 	}
@@ -55,7 +55,7 @@ public class MessageBusImpl<microServiceVector> implements MessageBus {
 	 * @param <T>  The type of Event
 	 */
 	@Override
-	public synchronized  <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
+	public    <T> void subscribeEvent(Class<? extends Event<T>> type, MicroService m) {
 		if (!msgBusEV.containsKey(type))
 			msgBusEV.put(type,new Vector<>());
 		msgBusEV.get(type).add(m.hashCode());
@@ -124,8 +124,10 @@ public class MessageBusImpl<microServiceVector> implements MessageBus {
 
 	@Override
 	public void unregister(MicroService m) {
+		try {
+			msgBusMS.remove(m.hashCode());
+		}catch (Exception e){throw new NullPointerException(m.getName()+"is already unregister");}
 
-		msgBusMS.remove(m.hashCode());
 		for (Class<? extends Broadcast> broad:msgBusB.keySet())
 		{
 			if(msgBusB.get(broad).contains(m.hashCode()))
@@ -144,8 +146,10 @@ public class MessageBusImpl<microServiceVector> implements MessageBus {
 
 	@Override
 	public synchronized Message awaitMessage(MicroService m) throws InterruptedException {
+		System.out.println(msgBusMS);
 		if(!checkIfRegister(m))
 			throw new IllegalStateException(m.getName()+" is not register");
+
 		while(msgBusMS.get(m.hashCode()).isEmpty()){//wait until is massage to take
 			wait();
 		}

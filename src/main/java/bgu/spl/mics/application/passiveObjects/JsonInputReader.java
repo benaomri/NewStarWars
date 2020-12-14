@@ -7,6 +7,9 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 
+/**
+ * public class that take the data from the json input and init 'inputApp'
+ */
 public class JsonInputReader {
     public static InputApp getInputFromJson(String filePath) throws IOException {
         Gson gson = new Gson();

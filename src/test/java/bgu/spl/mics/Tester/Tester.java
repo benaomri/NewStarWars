@@ -420,7 +420,7 @@ public class Tester {
                 }
             }
             if(passedTestSabina)
-                System.out.println("\r\nPassed Sync Test Sabina -> " +passedTestSabina);
+                System.out.println("\r\nPassed Sync Test Sabina  -> " +passedTestSabina);
             else
                 System.out.println("\r\nFailed Sync Test Sabina -> Unregister/Send Broadcast Sync Issue. Make sure they are synced on the same object");
         }

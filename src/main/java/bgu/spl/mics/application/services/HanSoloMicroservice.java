@@ -27,45 +27,50 @@ public class HanSoloMicroservice extends MicroService {
         super("Han");
     }
 
-
+    /**
+     * initialize HanSolo :
+     *     register
+     *     subscribe to Terminate Broadcast
+     *     subscribe to Att Event
+     */
     @Override
     protected void initialize() {
         MessageBusImpl.getInstance().register(this);
         subscribeEvent(AttackEvent.class, this::HanAtt) ;
         subscribeBroadcast(TerminateBroadCast.class,c -> terminate());
-        Main.CDL.countDown();
+        Main.CDL.countDown();// count down for init Leia
 
     }
     @Override
     protected void close()
     {
         Diary.getInstance().setHanSoloTerminate();
-    }
+    }//write the terminate time in the dairy
 
-    private  void HanAtt(AttackEvent a){
-        Vector<Ewok> EwokList=Ewoks.getInstance().getEwokList();
-        List<Integer> serials=a.getSerials();
-        long duration=a.getDuration();
+    private  void HanAtt(AttackEvent a){//Attacking
+        Vector<Ewok> EwokList=Ewoks.getInstance().getEwokList();//All Ewoks
+        List<Integer> serials=a.getSerials();// Ewoks for Att
+        long duration=a.getDuration();//att duration
 
-        //Acquire
+        //Acquire Ewoks
         for (Integer value : serials) {
             int serial = value - 1;
             EwokList.get(serial).acquire();
         }
         try {
-            Thread.sleep(duration);
+            Thread.sleep(duration);//attacking
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        //Release
+        //Release Ewoks
         for (Integer integer : serials) {
             int serial = integer - 1;
             EwokList.get(serial).release();
         }
-        MessageBusImpl.getInstance().sendBroadcast(new LeiaMFinishAtt(a));
-        Diary.getInstance().setHanSoloFinish();
-        Diary.getInstance().incAtt();
+        MessageBusImpl.getInstance().sendBroadcast(new LeiaMFinishAtt(a));//send to leia that att finished
+        Diary.getInstance().setHanSoloFinish();//write in dairy finish att
+        Diary.getInstance().incAtt();// increment number of att
     }
 
 

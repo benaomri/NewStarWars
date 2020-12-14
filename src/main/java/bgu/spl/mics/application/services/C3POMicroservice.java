@@ -30,44 +30,50 @@ public class C3POMicroservice extends MicroService {
     }
 
     @Override
+    /**
+     * initialize C3PO :
+     *     register
+     *     subscribe to Terminate Broadcast
+     *     subscribe to Att Event
+     */
     protected void initialize() {
         MessageBusImpl.getInstance().register(this);
         subscribeBroadcast(TerminateBroadCast.class, c -> terminate());
         subscribeEvent(AttackEvent.class, this::C3POAtt);
-        Main.CDL.countDown();
+        Main.CDL.countDown();// count down for init Leia
 
 
     }
     @Override
-    protected void close()
+    protected void close()//write the terminate time in the dairy
     {
         Diary.getInstance().setC3POTerminate();
     }
 
-    private  void C3POAtt(AttackEvent a){
-        Vector<Ewok> EwokList= Ewoks.getInstance().getEwokList();
-        List<Integer> serials=a.getSerials();
-        long duration=a.getDuration();
-        //Acquire
+    private  void C3POAtt(AttackEvent a){//Attacking
+        Vector<Ewok> EwokList= Ewoks.getInstance().getEwokList();//All Ewoks
+        List<Integer> serials=a.getSerials();// Ewoks for Att
+        long duration=a.getDuration();//att duration
+        //Acquire Ewoks
         for (Integer integer : serials) {
             int serial = integer - 1;
             EwokList.get(serial).acquire();
         }
         try {
 
-            Thread.sleep(duration);
+            Thread.sleep(duration);//attacking
 
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
 
-        //Release
+        //Release Ewoks
         for (Integer integer : serials) {
             int serial = integer - 1;
             EwokList.get(serial).release();
         }
-        MessageBusImpl.getInstance().sendBroadcast(new LeiaMFinishAtt(a));
-        Diary.getInstance().setC3POFinish();
-        Diary.getInstance().incAtt();
+        MessageBusImpl.getInstance().sendBroadcast(new LeiaMFinishAtt(a));//send to leia that att finished
+        Diary.getInstance().setC3POFinish();//write in dairy finish att
+        Diary.getInstance().incAtt();// increment number of att
     }
 }

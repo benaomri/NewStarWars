@@ -33,7 +33,7 @@ public class Ewoks {
     }
 
 
-    public static Ewoks getInstance(int numberOfEwoks){
+    public static Ewoks getInstance(int numberOfEwoks){//singleton constructor
         if(instance==null)
         {
             instance=new Ewoks(numberOfEwoks);

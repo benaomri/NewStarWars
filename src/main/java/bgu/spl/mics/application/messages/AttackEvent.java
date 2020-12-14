@@ -4,6 +4,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Vector;
 
+/**
+ * AttEvent class implement Event ,
+ */
 public class AttackEvent implements Event<Boolean> {
     long duration;
     List<Integer> serials=new Vector<>();

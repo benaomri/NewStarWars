@@ -1,7 +1,6 @@
 package bgu.spl.mics.application.passiveObjects;
 
 
-import bgu.spl.mics.application.Main;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -65,8 +64,7 @@ public class Diary {
      *
      * set LeiaTerminate
      */
-    public void setLeiaTerminate() {
-        LeiaTerminate = System.currentTimeMillis()- Main.getStartTime();
+    public void setLeiaTerminate() { LeiaTerminate = System.currentTimeMillis();
     }
 
     /**
@@ -74,7 +72,7 @@ public class Diary {
      * set LandoTerminate
      */
     public void setLandoTerminate() {
-        LandoTerminate =System.currentTimeMillis()- Main.getStartTime();
+        LandoTerminate =System.currentTimeMillis();
     }
 
     /**
@@ -82,7 +80,7 @@ public class Diary {
      * set R2D2Terminate
      */
     public void setR2D2Terminate() {
-        R2D2Terminate = System.currentTimeMillis()-Main.getStartTime();
+        R2D2Terminate = System.currentTimeMillis();
     }
 
 
@@ -91,7 +89,7 @@ public class Diary {
      * set C3POTerminate
      */
     public void setC3POTerminate() {
-        C3POTerminate = System.currentTimeMillis()-Main.getStartTime();
+        C3POTerminate = System.currentTimeMillis();
     }
 
 
@@ -100,9 +98,7 @@ public class Diary {
      *
      * set HanSoloTerminate
      */
-    public void setHanSoloTerminate() {
-
-        HanSoloTerminate =System.currentTimeMillis()- Main.getStartTime();
+    public void setHanSoloTerminate() {HanSoloTerminate =System.currentTimeMillis();
     }
 
 
@@ -111,7 +107,7 @@ public class Diary {
      * set R2D2Deactivate
      */
     public void setR2D2Deactivate() {
-        R2D2Deactivate =System.currentTimeMillis() - Main.getStartTime();
+        R2D2Deactivate =System.currentTimeMillis();
     }
 
     /**
@@ -119,7 +115,7 @@ public class Diary {
      * set C3POFinish
      */
     public void setC3POFinish() {
-        C3POFinish =System.currentTimeMillis() - Main.getStartTime();
+        C3POFinish =System.currentTimeMillis();
     }
 
     /**
@@ -127,7 +123,7 @@ public class Diary {
      * set HanSoloFinish
      */
     public void setHanSoloFinish() {
-        HanSoloFinish = System.currentTimeMillis()-Main.getStartTime();
+        HanSoloFinish = System.currentTimeMillis();
     }
 
     public long getHanSoloFinish() {

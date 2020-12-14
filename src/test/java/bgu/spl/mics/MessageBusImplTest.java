@@ -24,9 +24,11 @@ class MessageBusImplTest {
         testMS1= new MicroServiceTest();
         testMS2= new MicroServiceTest();
     }
-    //No need to tear down
     @AfterEach
     void tearDown() {
+        messageBusToCheck.unregister(testMS1);
+        messageBusToCheck.unregister(testMS2);
+
     }
 
     /**
@@ -57,6 +59,7 @@ class MessageBusImplTest {
         String result="Finished";
         messageBusToCheck.complete(event,result); //Do complete and setting result
         assertEquals(result,mission.get(),"Check if the result we get is the same as we set"); //Checking if equal
+
     }
 
     /**

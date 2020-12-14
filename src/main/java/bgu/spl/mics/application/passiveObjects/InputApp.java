@@ -5,6 +5,9 @@
 
 package bgu.spl.mics.application.passiveObjects;
 
+/**
+ * public class that init all data  for the application
+ */
 public class InputApp {
     private Attack[] attacks;
     int R2D2;

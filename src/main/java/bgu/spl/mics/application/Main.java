@@ -15,7 +15,6 @@ import java.util.concurrent.CountDownLatch;
  */
 public class Main {
 
-	private  static long StartTime;
 	private static Thread leia,hanSolo,c3po,lando,r2d2;
 	public static CountDownLatch CDL;
 	public static CountDownLatch CDL_Gson;
@@ -34,7 +33,7 @@ public class Main {
 			}
 		}
 		outGson("Output.json");
-		Ewoks.getInstance().setInstance();
+		Ewoks.setInstance();
 
 	}
 
@@ -55,7 +54,6 @@ public class Main {
 		lando=new Thread(new LandoMicroservice(input.getLando()));
 		r2d2=new Thread(new R2D2Microservice(input.getR2D2()));
 		Ewoks.getInstance(input.getEwoks());
-		StartTime=System.currentTimeMillis();
 	}
 
 	/**
@@ -86,13 +84,5 @@ public class Main {
 			e.printStackTrace();
 		}
 
-	}
-
-	/**
-	 * Getter for StartTime
-	 * @return the start time of the run
-	 */
-	public static long getStartTime(){
-		return StartTime;
 	}
 }

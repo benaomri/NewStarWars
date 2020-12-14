@@ -19,30 +19,35 @@ public class LandoMicroservice  extends MicroService {
         super("Lando");
         this.duration=duration;
     }
-
+    /**
+     * initialize Lando :
+     *     register
+     *     subscribe to Terminate Broadcast
+     *     subscribe to BombDestroyer Event
+     */
     @Override
     protected void initialize() {
         MessageBusImpl.getInstance().register(this);
         subscribeBroadcast(TerminateBroadCast.class, c -> terminate());
         subscribeEvent(BombDestroyerEvent.class, c -> Bomb());
-        Main.CDL.countDown();
+        Main.CDL.countDown();// count down for init Leia
 
     }
     @Override
     protected void close()
     {
         Diary.getInstance().setLandoTerminate();
-    }
+    }//write the terminate time in the dairy
 
 
     public void Bomb()
     {
         try {
-            Thread.sleep(duration);
+            Thread.sleep(duration);//bombing
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-        MessageBusImpl.getInstance().sendBroadcast(new TerminateBroadCast());
+//finish bombing
+        MessageBusImpl.getInstance().sendBroadcast(new TerminateBroadCast());//seng terminate broad cast
     }
 }

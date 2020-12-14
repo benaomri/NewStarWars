@@ -23,7 +23,13 @@ public class LeiaMicroservice extends MicroService {
     static AtomicBoolean FinishedSend;
     private final Future[] futures;
 
-
+    /**
+     * public constructor
+     * @param attacks
+     * init fields: array of att
+     *              atomicBoolean switch for finish Att
+     *              array of futures
+     */
     public LeiaMicroservice(Attack[] attacks) {
         super("Leia");
         this.attacks = attacks;
@@ -31,6 +37,10 @@ public class LeiaMicroservice extends MicroService {
         futures=new Future[attacks.length];
 
     }
+
+    /**
+     * init leia
+     */
 
     @Override
     protected void initialize() {
